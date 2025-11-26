@@ -9,9 +9,11 @@
 <style>
 
 html, body {
-  margin: 0;
-  padding: 0;
-  scroll-behavior: smooth;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 span{
@@ -24,7 +26,7 @@ span{
     display: flex;
     flex-direction: column;
     width:100%;
-    min-height:75vh;
+    min-height:100vh;
     height:auto;
     background-color: black;
     color:rgb(0, 0, 0);
@@ -48,18 +50,20 @@ span{
     box-shadow: 0 -20px 30px rgba(0, 0, 0, 0.3) inset;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35) inset;
     background-color:rgb(29, 34, 41);
-   
     background: linear-gradient(0deg,rgb(13, 17, 19) 0%, rgba(29, 34, 41, 1) 100%);
 }
 
+/* Third page */
 .Page--third{
+    min-height:60vh;
+
     box-shadow: 0 -20px 30px rgba(0, 0, 0, 0.3) inset;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35) inset;
     background-color:rgb(29, 34, 41);
-   
     background: linear-gradient(0deg,rgb(11, 15, 17) 0%, rgba(29, 34, 41, 1) 100%);
 }
 
+/* Fourth page */
 .Page--fourth{
     min-height:25vh;
     box-shadow: 0 -20px 30px rgba(0, 0, 0, 0.3) inset;
@@ -225,7 +229,8 @@ span{
 
 /* Container for page title */
 .Title-Container{
-    display: flex;
+    display: block;
+    text-align: center;
     justify-content: center;
     font-size:3rem;
     color:#19c9ff;
@@ -260,6 +265,7 @@ span{
     padding-top: 1rem;
     padding-bottom: 1rem;
     line-height: 1.6;
+    
 }
 
 
@@ -272,12 +278,14 @@ span{
     width:100%;
     height:auto;
     margin:1rem;
-
+    margin-inline: auto;
 }
 
 
 .card {
-    width: 420px;
+    width: clamp(280px, 90vw, 420px);
+    
+    max-width: 420px; 
     height: 380px;
     background: rgba(49, 54, 56, 0.4);
     justify-content: center;
@@ -285,7 +293,7 @@ span{
     overflow: hidden;
     display: flex;
     flex-direction: column;
-
+    margin-right: 2rem;
     border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
 
@@ -351,10 +359,10 @@ span{
 /* Container that centers everything */
 .skills-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items:flex-start;
     flex-wrap: wrap;
-    
+    gap: 1.5rem; 
     padding: 2rem;
     max-width: 900px;
     margin: 0 auto;
@@ -423,6 +431,30 @@ span{
 }
 
 
+
+.SocialsContainer{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+
+
+.Socials{
+    display: flex;
+    justify-content: space-evenly;
+    
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    width: 100px;
+    height: 100px;
+    transition: transform 0.2s ease;
+}
+
+.Socials:hover{
+    transform: scale(1.1);
+}
+
 /* Footer */
 .footer {
     width: 100%;
@@ -486,7 +518,7 @@ span{
     <div class = "WelcomeDescription">A portfolio of <span id = "Color01">technical art</span>, <span id = "Color02">computer science <br>experiments</span>, <span id = "Color03">VFX</span> and more</div>
     <div class = "Button-Row">
         <button class="Button" onclick="location.href='#page2'">View Projects</button> 
-        <button class="Button Button--contact">Contact Me</button> 
+        <button class="Button Button--contact"onclick="location.href='#page4'">Contact Me</button> 
     </div>
 </div>
 
@@ -527,19 +559,21 @@ span{
             </div>
         </div>
 
+        <a href = "https://github.com/ColePeterson/ColeEngine" target="_blank" rel="noopener">
+            <div class="card">
+                <div class="card-image">
+                    <img src="Images/Card_Engine.png" alt="Custom Engine">
+                </div>
 
-        <div class="card">
-            <div class="card-image">
-                <img src="Images/Card_Engine.png" alt="Custom Engine">
+                <div class="card-body">
+                    <h3 class="card-title">Custom ECS and Particle System</h3>
+                    <p class="card-text">
+                    A custom rendering engine featuring ECS and programmable particle systems 
+                    </p>
+                </div>
+                
             </div>
-
-            <div class="card-body">
-                <h3 class="card-title">Custom ECS and Particle System</h3>
-                <p class="card-text">
-                A custom rendering engine featuring ECS and programmable particle systems 
-                </p>
-            </div>
-        </div>
+        </a>
 
         <div class="card">
             <div class="card-image">
@@ -563,6 +597,19 @@ span{
                 <h3 class="card-title">Live Music Visualizer</h3>
                 <p class="card-text">
                 A custom engine that combines the power of shaders and MIDI perfect for live music 
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-image">
+                <img src="Images/Card_Website.png" alt="This Website">
+            </div>
+
+            <div class="card-body">
+                <h3 class="card-title">Portfolio Website</h3>
+                <p class="card-text">
+                My portfolio website made from scratch with pure HTML/CSS and some JS 
                 </p>
             </div>
         </div>
@@ -634,7 +681,7 @@ span{
 
 <!-- Page 4 (About me) -->
 
-<div id = "page3" class = "Page Page--fourth">
+<div id = "page4" class = "Page Page--fourth">
     <div class = "Title-Container">About Me</div>
     <div class = "Title-Container Title-Container--AboutMe">My name is Cole Peterson and I'm a technical artist/video game developer currently living in Seattle Washington. Computer graphics has always been a huge passion of mine as well as programming and art in general.  
     <br><br>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor.
@@ -652,7 +699,7 @@ span{
 
 <!-- Page 5 (Contact me) -->
 
-<div id = "page3" class = "Page Page--third">
+<div id = "page5" class = "Page Page--third">
     <div class = "Title-Container">Let's Connect!</div>
     <div class = "Title-Container Title-Container--Desc">Interested in collaborating? I'd love to hear from you! The best way to contact me is through email: </div>
     <a href="mailto:cole.peterson.biz@gmail.com?subject=Portfolio Inquiry" style="text-decoration: none;">
@@ -660,6 +707,19 @@ span{
             <button class = "Button Button--Resume">Email Me</button>
         </div>
     </a>
+
+    <div class = "SocialsContainer">
+        <a href = "https://www.linkedin.com/in/cole-peterson-709a27269/">
+            <div class = "Socials">
+                <img src="Images/Icon_LinkedIn.png" alt="LinkedIn">
+            </div>
+        </a>
+        <a href = "https://www.shadertoy.com">
+            <div class = "Socials">
+                <img src="Images/Icon_Shadertoy.png" alt="Shadertoy">
+            </div>
+        </a>
+    </div>
 
     
 
