@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+html, body {
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+
+span{
+    display: inline;
+    white-space: normal;
+}
+
+/* Fullscreen page class */
+.Page{
+    display: flex;
+    flex-direction: column;
+    width:100%;
+    min-height:75vh;
+    height:auto;
+    background-color: black;
+    color:rgb(0, 0, 0);
+    margin-bottom: 0px;
+    scroll-snap-align: start;
+    box-sizing: border-box;
+}
+
+/* First page */
+.Page--first{
+    background-image: url("Images/TestBackground.png");
+    background-size: cover;        /* scale image to always cover */
+    background-position: center;   /* center the image */
+    background-repeat: no-repeat;  /* no tiling */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Second page */
+.Page--second{
+    box-shadow: 0 -20px 30px rgba(0, 0, 0, 0.3) inset;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35) inset;
+    background-color:rgb(29, 34, 41);
+   
+    background: linear-gradient(0deg,rgb(13, 17, 19) 0%, rgba(29, 34, 41, 1) 100%);
+}
+
+.Page--third{
+    box-shadow: 0 -20px 30px rgba(0, 0, 0, 0.3) inset;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35) inset;
+    background-color:rgb(29, 34, 41);
+   
+    background: linear-gradient(0deg,rgb(11, 15, 17) 0%, rgba(29, 34, 41, 1) 100%);
+}
+
+.Page--fourth{
+    min-height:25vh;
+    box-shadow: 0 -20px 30px rgba(0, 0, 0, 0.3) inset;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35) inset;
+    background-color:rgb(29, 34, 41);
+   
+    background: linear-gradient(0deg,rgb(11, 15, 17) 0%, rgba(29, 34, 41, 1) 100%);
+
+    padding-bottom: 2rem;
+}
+
+
+/* Top navigation bar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.08);   /* subtle transparent white */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 1rem 2rem;
+  z-index: 1000;
+}
+
+/* Left logo */
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+
+/* Nav links */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+  padding-right: 4rem;
+
+}
+
+/* Nav links clicked */
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: opacity 0.2s ease;
+  
+}
+
+/* Nav links hover */
+.nav-links a:hover {
+  opacity: 0.6;
+}
+
+/* Demo background colors */
+#home { background: #111; color: white; }
+#about { background: #333; color: white; }
+#projects { background: #555; color: white; }
+#contact { background: #777; color: white; }
+
+
+.parallax-group {
+  position: relative;
+  height: 100vh;
+  transform-style: preserve-3d;
+}
+
+.parallax-content {
+  transform: translateZ(-1px) scale(2); /* moves slower */
+}
+
+
+
+/* Main welcome text */
+.WelcomeText{
+    font-family: "Inter", sans-serif;
+    font-size: 6rem;
+    font-weight: 700;
+    color: rgb(255, 255, 255);
+    text-align: center;
+    margin: 0;
+}
+
+/* Smaller description text */
+.WelcomeDescription{
+    font-family: "Poppins", sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: rgb(146, 146, 146);
+    text-align: center;
+    margin: 0;
+}
+
+/* Color pallete for description text */
+#Color01 {color: #ff9d1e;}
+#Color02 {color: #16ff9e;}
+#Color03 {color: #00d9ff;}
+
+
+/* Button container */
+.Button-Row {
+  display: flex;
+  justify-content: center;   /* center the buttons */
+  align-items: center;
+  gap: 1rem;                  /* spacing between buttons */
+  padding-top: 0.75rem;
+}
+
+/* Main button */
+.Button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;          /* rounded corners */
+    background: #19c9ff;         /* button color */
+    color: rgb(0, 0, 0);                /* text color */
+    border: none;                /* remove default border */
+    font-size: 1rem;
+    font-weight: 300;
+    cursor: pointer;
+    border-style: none;
+    transition: box-shadow 0.3s ease;
+}
+
+/* Contact button variation */
+.Button--contact{
+    background-color: rgba(19, 19, 19, 0.5);
+    color:white;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #666666;
+}
+
+/* button hover effect */
+.Button:hover {
+  box-shadow: 0 0 15px #4a90e2, 0 0 30px #4a90e2;
+}
+
+/* Button click effect */
+.Button:active {
+  box-shadow: 0 0 10px #4a90e2;
+}
+
+/* Button for download resume */
+.Button--Resume{
+    background: linear-gradient(to right, #ffa600, #ffd900);
+    border-style: none;
+    border-color: #666666;
+    font-weight: 500;
+}
+
+.Button--Resume:Hover{
+   box-shadow: 0 0 10px #ffb938, 0 0 30px #ffd06b;
+}
+
+/* Container for page title */
+.Title-Container{
+    display: flex;
+    justify-content: center;
+    font-size:3rem;
+    color:#19c9ff;
+    text-shadow: 0 0 18px rgba(0, 132, 255, 0.1);
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    padding-top: 4rem;
+}
+
+/* Container for page title description */
+.Title-Container--Desc{
+    display: block;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    font-size:1rem;
+    color:#999999;
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    padding-top: 1rem;
+}
+
+.Title-Container--AboutMe{
+    display: block;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
+    font-size:1rem;
+    color:#999999;
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    line-height: 1.6;
+}
+
+
+.Cards-Container{
+    display: flex;
+    flex-wrap:wrap;
+    gap: 1rem;
+    padding: 1rem;
+    justify-content: center;
+    width:100%;
+    height:auto;
+    margin:1rem;
+
+}
+
+
+.card {
+    width: 420px;
+    height: 380px;
+    background: rgba(49, 54, 56, 0.4);
+    justify-content: center;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+
+    font-family: "Poppins", sans-serif;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+/* Top image area (about 75%) */
+.card-image {
+    flex: 0 0 75%;
+    position: relative;
+    overflow: hidden;
+    transition: filter 0.5s ease;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+/* Bottom text area */
+.card-body {
+    flex: 1;
+    padding: 1.1rem 1.3rem 1.3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.card-title {
+    margin: 0 0 0.35rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.card-text {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* Hover: zoom image + glow card */
+.card:hover {
+    border-color: rgba(0, 255, 255, 0.4);
+    cursor: pointer;
+}
+
+.card:hover .card-image img {
+    transform: scale(1.08);
+    filter: brightness(0.8);
+}
+
+
+
+
+
+/* Container that centers everything */
+.skills-container {
+    display: flex;
+    justify-content: space-between;
+    align-items:flex-start;
+    flex-wrap: wrap;
+    
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Smaller, clean skill cards */
+.skill-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    border-width: 1px;
+    border-color: #5f5f5f;
+    border-style: solid;
+    width: 220px;               /* Smaller width */
+    padding: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover effect */
+.skill-card:hover {
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    cursor:pointer;
+}
+
+/* Title */
+.skill-card h3 {
+    color: #19c9ff;
+    font-family: "Poppins", sans-serif;
+    margin-top: 0;
+    margin-bottom: 0.6rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.skill-card:hover h3 {
+  color: #7fc1ff;
+  text-shadow: 0 0 18px rgba(0, 132, 255, 1.0);
+}
+
+/* Skill list */
+.skill-card ul {
+    color: whitesmoke;
+    font-family: "Poppins", sans-serif;
+    list-style: none;          /* Remove default bullets */
+    padding-left: 0;
+    padding-right: 14px;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;          /* Row/column spacing */
+}
+
+.skill-card li {
+    position: relative;
+    padding-left: 12px;
+    font-size: 1.0rem;
+}
+
+.skill-card li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #333;
+    font-weight: bold;
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">Cole Peterson</div>
+    <ul class="nav-links">
+      <li><a href="#page1">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#page2">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+
+
+
+
+<!-- Page 1 (Welcome) -->
+
+<div id = "page1" class = "Page Page--first">
+    <div class = "WelcomeText">Hello, I'm Cole</div>
+    <div class = "WelcomeDescription">A portfolio of <span id = "Color01">technical art</span>, <span id = "Color02">computer science <br>experiments</span>, <span id = "Color03">VFX</span> and more</div>
+    <div class = "Button-Row">
+        <button class="Button" onclick="location.href='#page2'">View Projects</button> 
+        <button class="Button Button--contact">Contact Me</button> 
+    </div>
+</div>
+
+
+
+<!-- Page 2 (Projects) -->
+
+<div id = "page2" class = "Page Page--second">
+    <div class = "Title-Container">Featured Projects</div>
+    <div class = "Title-Container Title-Container--Desc">A collection of various tech art and computer science projects</div>
+
+    <div class = "Cards-Container">
+
+        <div class="card">
+            <div class="card-image">
+                <img src="Images/Card_Shaders.png" alt="Shader Viewer">
+            </div>
+
+            <div class="card-body">
+                <h3 class="card-title">Shader Viewer</h3>
+                <p class="card-text">
+                Custom built Web-GL shader viewer to show off my fragment shader art
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-image">
+                <img src="Images/Card_Audio.png" alt="Audio Synthesis">
+            </div>
+
+            <div class="card-body">
+                <h3 class="card-title">Audio Synthesis Via Node Graph</h3>
+                <p class="card-text">
+                Create sounds using oscillators and math in this interactive tool!
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-image">
+                <img src="Images/Card_Engine.png" alt="Custom Engine">
+            </div>
+
+            <div class="card-body">
+                <h3 class="card-title">Custom ECS and Particle System</h3>
+                <p class="card-text">
+                A custom rendering engine featuring ECS and programmable particle systems 
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-image">
+                <img src="Images/Card_Nightwalker_2.png" alt="Raycasting engine">
+            </div>
+
+            <div class="card-body">
+                <h3 class="card-title">First Person Raycasting Game</h3>
+                <p class="card-text">
+                My 1st year video game project. A 2.5D raycast engine featuring 2D sprites, diffuse lighting and working doors 
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-image">
+                <img src="Images/Card_Vizzr.png" alt="Music Visualizer">
+            </div>
+
+            <div class="card-body">
+                <h3 class="card-title">Live Music Visualizer</h3>
+                <p class="card-text">
+                A custom engine that combines the power of shaders and MIDI perfect for live music 
+                </p>
+            </div>
+        </div>
+
+        
+
+
+    </div>
+
+</div>
+
+<!-- Page 3 (Skills and qualifications) -->
+
+<div id = "page3" class = "Page Page--third">
+    <div class = "Title-Container">Skills and Qualifications</div>
+    <div class="Title-Container Title-Container--Desc">
+  I attended <span style="color:white;">Digipen Institute of Technology</span>
+  and earned a <span style="color:white;">Bachelors of Computer Science</span> 
+  in Real-time Interactive Simulation (RTIS) degree. 
+  Below are some of my skills.
+</div>
+
+    
+
+    <div class="skills-container">
+
+        <div class="skill-card">
+            <h3>Programming</h3>
+            <ul>
+            <li>C/C++</li>
+            <li>OpenGL/DirectX</li>
+            <li>JavaScript</li>
+            </ul>
+        </div>
+
+        <div class="skill-card">
+            <h3>Game Engines</h3>
+            <ul>
+            <li>Unreal Engine 5</li>
+            <li>Unity</li>
+            </ul>
+        </div>
+
+        <div class="skill-card">
+            <h3>Technical Art</h3>
+            <ul>
+            <li>Shaders(GLSL/HLSL)</li>
+            <li>Blender 3D</li>
+            <li>Particle Systems (Niagara)</li>
+            <li>Art Pipeline Management</li>
+            <li>Custom Art Pipeline Tools</li>
+            </ul>
+        </div>
+
+         <div class="skill-card">
+            <h3>Custom Rendering Engines</h3>
+            <ul>
+            <li>C++/OpenGL ECS system</li>
+            <li>WebGL</li>
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+<!-- Page 4 (About me) -->
+
+<div id = "page3" class = "Page Page--fourth">
+    <div class = "Title-Container">About Me</div>
+    <div class = "Title-Container Title-Container--AboutMe">My name is Cole Peterson and I'm a technical artist/video game developer currently living in Seattle Washington. Computer graphics has always been a huge passion of mine as well as programming and art in general.  
+    <br><br>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor.
+    <br><br>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor.
+    </div>
+
+    <div class = "Button-Row">
+        <button class = "Button Button--Resume">Download Resume</button>
+    </div>
+    
+
+</div>
+
+
+
+<!-- Page 5 (Contact me) -->
+
+<div id = "page3" class = "Page Page--third">
+    <div class = "Title-Container">Let's Connect!</div>
+    <div class = "Title-Container Title-Container--Desc">Interested in collaborating? I'd love to hear from you! The best way to contact me is through email: </div>
+    <a href="mailto:cole.peterson.biz@gmail.com?subject=Portfolio Inquiry" style="text-decoration: none;">
+        <div class = "Button-Row">
+            <button class = "Button Button--Resume">Email Me</button>
+        </div>
+    </a>
+
+    
+
+</div>
+
+</body>
+
+</html>
