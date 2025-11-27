@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+html, body {
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+
+.Page{
+    display: flex;
+    flex-direction: column;
+    width:100%;
+    min-height:100vh;
+    height:auto;
+    background-color:rgb(29, 34, 41);
+    background: linear-gradient(0deg,rgb(13, 17, 19) 0%, rgba(29, 34, 41, 1) 100%);
+    color:rgb(0, 0, 0);
+    margin-bottom: 0px;
+    scroll-snap-align: start;
+    box-sizing: border-box;
+}
+
+/* Top navigation bar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.08);   /* subtle transparent white */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 1rem 2rem;
+  z-index: 1000;
+}
+
+/* Left logo */
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+}
+
+
+/* Nav links */
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+    padding-right: 4rem;
+
+}
+
+/* Nav links clicked */
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: opacity 0.2s ease;
+  
+}
+
+/* Nav links hover */
+.nav-links a:hover {
+    opacity: 0.6;
+}
+
+/* Demo background colors */
+#home { background: #111; color: white; }
+#about { background: #333; color: white; }
+#projects { background: #555; color: white; }
+#contact { background: #777; color: white; }
+
+
+/* Container for page title */
+.Title-Container{
+    display: block;
+    text-align: center;
+    justify-content: center;
+    font-size:3rem;
+    color:#19c9ff;
+    text-shadow: 0 0 18px rgba(0, 132, 255, 0.1);
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    padding-top: 4rem;
+}
+
+/* Container for page title description */
+.Title-Container--Desc{
+    display: block;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    font-size:1rem;
+    color:#999999;
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    padding-top: 1rem;
+}
+
+.Cards-Container{
+    display: flex;
+    flex-wrap:wrap;
+    gap: 1rem;
+    padding: 1rem;
+    justify-content: center;
+    width:100%;
+    height:auto;
+    margin:1rem;
+    margin-inline: auto;
+}
+
+.card {
+    width: clamp(280px, 90vw, 420px);
+    
+    max-width: 420px; 
+    height: 380px;
+    background: rgba(49, 54, 56, 0.4);
+    justify-content: center;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin-right: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+
+    font-family: "Poppins", sans-serif;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+/* Top image area (about 75%) */
+.card-image {
+    flex: 0 0 75%;
+    position: relative;
+    overflow: hidden;
+    transition: filter 0.5s ease;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+/* Bottom text area */
+.card-body {
+    flex: 1;
+    padding: 1.1rem 1.3rem 1.3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.card-title {
+    margin: 0 0 0.35rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.card-text {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.75);
+}
+.card:hover {
+    border-color: rgba(0, 255, 255, 0.4);
+    cursor: pointer;
+}
+
+.card:hover .card-image img {
+    transform: scale(1.08);
+    filter: brightness(0.8);
+}
+
+</style>
+</head>
+
+<script type="text/javascript" src="http://colepeterson.net/Javascript/jquery-3.4.0.js"></script>
+
+<script>
+    
+    // Wait until DOM is loaded
+    document.addEventListener("DOMContentLoaded", () => {
+        
+        // TODO: make this work on my server 
+        async function SetShader(name, path, description)
+        {
+            const response = await fetch(path);
+            const text = await response.text();
+
+            window.localStorage.setItem("sid", text);
+            window.localStorage.setItem("snm", name);
+            window.localStorage.setItem("sdesc", description);
+            window.localStorage.setItem("nfiles", 1);
+
+            window.location = "ShaderViewer.html";
+        }
+
+        // When shader is clicked grab and store neccesary information
+        document.querySelectorAll(".card").forEach(card => {
+        card.addEventListener("click", (event) => {
+            const path = event.currentTarget.dataset.path;
+            const name = event.currentTarget.dataset.name;
+            const description = event.currentTarget.dataset.description;
+
+                SetShader(name, path, description);
+            });
+        });
+
+
+
+    });
+
+
+</script>
+
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">Cole Peterson</div>
+    <ul class="nav-links">
+      <li><a href="#page1">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#page2">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+
+<div class = "Page" id = "Page1">
+
+
+    <div class = "Title-Container">Shader Gallery</div>
+    <div class = "Title-Container Title-Container--Desc">Here is a collection of my pixel shader art ported from <span><a href = "https//www.shadertoy.com" style = "text-decoration: none;">shadertoy</a></span> to a custom built WebGL shader viewer.</div>
+
+
+
+    <div class = "Cards-Container">
+
+
+        <div class="card" id = "FractalDoodle" data-path = "Shaders/FractalDoodle.txt" data-name = "Fractal Pattern Doodle" data-description = "Tree like fractal in repeating space">
+            <div class="card-image">
+                <img src="Images/Card_Shaders.png" alt="Fractal Pattern Doodle">
+            </div>
+
+            <div class="card-body">
+                <h3 class="card-title">Fractal Pattern Doodle</h3>
+                <p class="card-text">
+                Tree like fractal in repeating space
+                </p>
+            </div>
+        </div>
+
+
+        <div class="card" id = "CircleDay" data-path = "Shaders/CircleDay.txt" data-name = "Circle a Day" data-description = "Circles and a loop. Made shader of the week!">
+            <div class="card-image">
+                <img src="Images/shader_circle.jpg" alt="Circle a Day">
+            </div>
+
+            <div class="card-body">
+                <h3 class="card-title">Circle a Day</h3>
+                <p class="card-text">
+                Circles and a loop. Made shader of the week!
+                </p>
+            </div>
+        </div>
+
+        <div class="card" id = "Coaster" data-path = "Shaders/coaster2d.txt" data-name = "Roller Coaster 2D" data-description = "Cute little roller coaster made from 2d SDF's">
+            <div class="card-image">
+                <img src="Images/shader_coaster.jpg" alt="Roller Coaster 2D">
+            </div>
+
+            <div class="card-body">
+                <h3 class="card-title">Roller Coaster 2D</h3>
+                <p class="card-text">
+                Cute little roller coaster made from 2d SDF's
+                </p>
+            </div>
+        </div>
+
+        <div class="card" id = "Bridges" data-path = "Shaders/WeavingBridges.txt" data-name = "Weaving Bridges" data-description = "Infinite traffic!">
+            <div class="card-image">
+                <img src="Images/shader_bridges.jpg" alt="Weaving Bridges">
+            </div>
+
+            <div class="card-body">
+                <h3 class="card-title">Weaving Bridges</h3>
+                <p class="card-text">
+                Infinite traffic!
+                </p>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+</body>
+
+
+</html>

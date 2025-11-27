@@ -1,0 +1,202 @@
+body{
+    background-color: #2e2e2e;
+    color: #d4d4d4;
+    font-family: sans-serif;
+    padding:20px;
+    
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                        supported by Chrome, Edge, Opera and Firefox */
+}
+
+.nodeParentEl{
+    background-color:#6e6e6e;
+    color:rgb(231, 231, 231);
+    text-shadow: 0px 0px 2px rgba(0, 0, 0, 150);
+    -webkit-box-shadow: 5px 5px 10px 5px rgba(0,0,0,0.5); 
+    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.5);
+    font-weight: bold;
+
+    border-top-left-radius:.75em;
+    border-top-right-radius:.75em;
+
+    width:auto;
+    height:auto;
+
+    font-size: 20px;
+
+    padding-top:0.1em;
+    padding-bottom:0.1em;
+
+    padding-left:1.0em;
+    padding-right:1.0em;
+
+    display: inline-block;
+    position:absolute;
+    text-align: center;
+}
+
+
+
+
+.nodeBody{
+    background-color: #4e4e4e;
+    -webkit-box-shadow: 5px 5px 10px 5px rgba(0,0,0,0.5); 
+    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.5);
+
+    border-bottom-left-radius:.75em;
+    border-bottom-right-radius:.75em;
+
+    display: inline-block;
+    position:absolute;
+    
+    width: 100%;
+    height: auto;
+
+    left:0%;
+    top:100%;
+
+    min-height: 26px;
+}
+
+
+
+.hoverInfo{
+    background-color: #2b90d4;
+    color:black;
+
+    position: absolute;
+    font-size: 16px;
+
+    text-align: left;
+
+    border-radius: 8px;
+    padding:0.25em;
+
+    width:auto;
+    height:auto;
+
+    left:0%;
+    bottom:100%;
+    z-index: 200;
+}
+
+.nodeInputBox{
+    display: inline-block;
+    white-space: nowrap;
+    background-color:#6e6e6e;
+    
+    margin-left:0.3em;
+    margin-right: .4em;
+    
+    width:70%;
+    height:1.5em;
+    font-size: 15px;
+    
+    border-radius: 6px;
+    border-color: rgb(124, 124, 124);
+    border-width:.135em;
+    
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.nodeInputBox:focus{
+    background-color: rgb(180, 180, 180);
+    outline:none;
+}
+
+.nodeInput:before{
+    content:"";
+    border:solid 1px #dedede;
+    
+    width:0.6em;
+    height:0.6em;
+    border-radius:0.5em;
+
+    position:absolute;
+
+    left:-20%;
+    top:30%;
+}
+
+.nodeInput:hover:before{
+    background-color: rgb(255, 255, 255);
+    
+}
+.nodeInput:active:before{
+    background-color: rgb(55, 197, 30);
+}
+.nodeInput{
+    cursor: pointer;
+    font-size: 18px;
+    white-space: nowrap;
+    position:relative;
+    
+    box-sizing: border-box;
+    
+    width:50%;
+    
+    margin-left:0.1em;
+    margin-bottom:0.5em;
+
+    padding-left: 0.2em;
+
+    text-align: left;
+}
+
+
+
+.nodeOutput:before{
+    content:"";
+    border:solid 1px #dedede;
+    
+    width:0.6em;
+    height:0.6em;
+    border-radius:0.5em;
+
+    position:absolute;
+
+    right:-25%;
+    top:30%;
+}
+.nodeOutput:hover:before{
+    background-color: rgb(255, 255, 255);
+}
+
+.nodeOutput:active:before{
+    background-color: rgb(27, 154, 204);
+    border-color: rgb(0, 0, 0);
+}
+
+.nodeOutput{
+    cursor: pointer;
+    white-space: nowrap;
+    position:absolute;
+    
+    font-size:17px;
+    
+    text-align: right;
+    padding-right:0.25em;
+
+    box-sizing: border-box;
+    
+    width:50%;
+    height:1.5em;
+
+    left:50%;
+    top:25%;
+}
+
+/* SVG */ 
+svg{
+    position:absolute;
+    top:0px;
+    left:0px;
+    z-index: -100;
+    width:100%;
+    height:100%;
+}

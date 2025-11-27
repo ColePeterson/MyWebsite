@@ -1,0 +1,164 @@
+precision mediump float;
+
+uniform vec2 resolution;
+
+uniform float time;
+
+uniform vec3 mouse;
+
+
+
+
+
+float line( in vec2 p, in vec2 a, in vec2 b, float th ){
+
+    vec2 pa = p-a, ba = b-a;
+
+    float h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );
+
+    return smoothstep(th, th + 0.0005,length( pa - ba*h ));
+
+}
+
+
+
+float axis(vec2 uv){
+
+    float h = 1.0;
+
+ 	vec2 v = smoothstep(0.004, 0.0041, abs(uv));
+
+    
+
+    const float inc = 1.0 / 5.0;
+
+    
+
+    for(float i = -2.0; i < 2.0; i += inc){
+
+     	h *= line(uv, vec2(i, 0.03), vec2(i, -0.03), 0.004);   
+
+    }
+
+    for(float i = -2.0; i < 2.0; i += inc){
+
+     	h *= line(uv, vec2(0.03, i), vec2(-0.03, i), 0.004);   
+
+    }
+
+    
+
+    return v.x * v.y * h;
+
+    
+
+}
+
+
+
+float Mandelbrot(vec2 c)
+
+{
+
+    vec2 z = vec2(0.0);
+
+    for (int i = 0; i < 64; i++)
+
+    {
+
+        z = vec2(z.x*z.x - z.y*z.y, 2.0*z.x*z.y) + c;
+
+        if( dot(z,z) > 128.0) return float(i) - log2(log2(dot(z,z)));
+
+    }
+
+    return 0.0;
+
+}
+
+
+
+
+
+void main()
+
+{
+
+    
+
+    vec2 R = resolution.xy;
+
+    vec2 uv = 2.0*vec2(gl_FragCoord.xy - 0.5*R.xy)/R.y;
+
+    vec2 m = 2.0*(mouse.xy / R.xy-.5); 
+
+    uv.x -= 0.3; // ultimate lazy way
+
+    m.x -= 0.17;
+
+    
+
+    m.x *= R.x/R.y;
+
+    
+
+    vec3 col = vec3(axis(uv));
+
+   
+
+	
+
+    
+
+    col = mix(vec3(0.0, 1.0, 0.0), col, 
+
+              smoothstep(0.029, 0.0295, length(uv - m.xy)));
+
+    
+
+    vec2 p1 = vec2(0);
+
+    vec2 p2 = m.xy;
+
+    
+
+   
+
+    float mand = Mandelbrot(uv);
+
+    col = mix(col, vec3(1.0, 0.0, 0.0), mand / 20.);
+
+    for(float i = 0.0; i < 70.0; i++)
+
+    {
+
+    	vec2 np = vec2((p1.x * p1.x - p1.y * p1.y), 
+
+                         (2.0 * p1.x * p1.y)) + m.xy;
+
+        
+
+        np = clamp(np, -4.0, 4.0);
+
+        col *= line(uv, p1, np, 0.005);
+
+        col = mix(vec3(0.0, 0.0, 1.0), col, smoothstep(0.024, 0.0245, length(uv - np)));
+
+    	p1 = np;
+
+    }
+
+  
+
+    
+
+    gl_FragColor = vec4(col, 1.0);
+
+}
+
+
+
+
+
+
+

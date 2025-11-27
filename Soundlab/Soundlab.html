@@ -1,0 +1,102 @@
+
+<style>
+    #canvas{
+        border: solid 2px;
+        border-color: black;
+        position: absolute;
+        left:0%;
+        top:50%;
+        width:50%;
+        height: 20%;
+        margin: 10px;
+    }
+
+
+</style>
+
+<html>
+
+    <head>
+        <link rel="stylesheet" href="node_style.css">
+    </head>
+
+    
+    <button type="button" onclick="startAudio()">Start Audio</button>
+    <button type="button" onclick="stopAudio()">Stop Audio</button>
+    <button type="button" onclick="testGraphics()">Test Graphs</button>
+    <button type="button" onclick="evaluateAllNodes()">Evaluate All Nodes</button>
+    <input type="number" id="test" name="test" min="-1" max="1" step="0.01" value = "0.0">
+    <p id = "bSize"></p>
+    <p id = "nSec"></p>
+    <p id = "cTime"></p>
+
+    
+
+
+    <svg id="svg">
+
+    </svg>    
+
+
+</html>
+
+
+<script src="util_vec2.js"></script>
+<script src="util_math.js"></script>
+<script src="http://colepeterson.net/Javascript/jquery-3.4.0.js"></script>
+<script src="jquery-3.4.0.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
+<script src="node_util.js"></script>
+<script src="AudioGraphics.js"></script>
+<script src="nodes.js"></script>
+<script src="sound.js"></script>
+
+<script src="CreateNode.js"></script>
+
+
+<script>
+
+
+</script>
+
+<script type="x-shader" id="vs">
+	attribute vec2 av;
+	
+	void main () {
+		gl_Position = vec4(av*2.-1.,0,1);
+	}
+
+</script>
+
+
+<script type="x-shader" id="fs">
+	precision mediump float;
+
+	uniform vec2 resolution;
+	uniform vec2 mouse;
+	uniform float MouseButton;
+
+    uniform float soundVal;
+
+	uniform float time;
+
+	#define u gl_FragCoord.xy
+	#define R resolution.xy
+
+	#define m vec2(resolution.x/resolution.y*(mouse.x/resolution.x-.5), mouse.y / resolution.y - .5)
+
+	void main () {
+        vec2 uv = u / R;
+        vec2 uv2 = vec2(u.xy - 0.5*R.xy)/R.y;
+		vec3 col = vec3(0);
+		
+        col.x = uv.x;
+        col.y = uv.y;
+        col *= step(.004, length(uv2 - m));
+
+		gl_FragColor = vec4(col, 1.);
+		
+	}
+ 
+</script>

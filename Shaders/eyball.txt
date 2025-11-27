@@ -1,0 +1,391 @@
+precision mediump float;
+
+uniform vec2 resolution;
+
+uniform float time;
+
+uniform vec3 mouse;
+
+
+
+#define FAR 30.0
+
+#define DISTANCE_BIAS 0.75
+
+const float pi = 3.1415926;
+
+
+
+
+
+vec2 m() // normalized mouse coords
+
+{
+
+    vec2 m = mouse.xy / resolution.xy-.5; 
+
+    m.x *= resolution.x/resolution.y;
+
+	return m;
+
+}
+
+
+
+
+
+mat2 rot(float a) {
+
+    return mat2(cos(a), -sin(a), sin(a), cos(a));
+
+}
+
+
+
+
+
+float map(vec3 rp)
+
+{
+
+   vec3 pos = rp - vec3( 0.0 , 0.0, 2.0); // eye pos
+
+    
+
+   // pos.xy -= m().xy*2.0;
+
+   
+
+    // distance to eye 
+
+   float res = length(pos)-0.5;
+
+    
+
+   return res;
+
+}
+
+
+
+vec3 getNormal(vec3 p){
+
+    vec2 e = vec2(0.0035, -0.0035); 
+
+    return normalize(
+
+        e.xyy * map(p + e.xyy) + 
+
+        e.yyx * map(p + e.yyx) + 
+
+        e.yxy * map(p + e.yxy) + 
+
+        e.xxx * map(p + e.xxx));
+
+}
+
+
+
+
+
+// fbm noise stuff
+
+float rand(vec2 n){ 
+
+	return fract(sin(dot(n, vec2(17.12037, 5.71713))) * 12345.6789);
+
+}
+
+float noise(vec2 n)
+
+{
+
+	vec2 d = vec2(0.0, 1.0);
+
+	vec2 b = floor(n), f = smoothstep(vec2(0.0), vec2(1.0), fract(n));
+
+	return mix(mix(rand(b + d.xx), rand(b + d.yx), f.x), mix(rand(b + d.xy), rand(b + d.yy), f.x), f.y);
+
+}
+
+float fbm(vec2 n, float m)
+
+{
+
+	float sum = 0.0, amp = 1.0;
+
+	for (int i = 0; i < 10; i++)
+
+    {
+
+        n.y-=time * m;
+
+		sum += noise(n) * amp;
+
+		n += n;
+
+		amp *= 0.5;
+
+	}
+
+	return sum;
+
+}
+
+
+
+vec3 eye(vec2 uv)
+
+{
+
+    
+
+    float pupil = 0.15; // pupil size
+
+    
+
+    float p = smoothstep(pupil - 0.04, pupil,  length(uv)*9.0); // pupil shape / shading
+
+    float p2 = smoothstep(0.15 + 0.18, 0.15 - 0.06 + 0.18,  length(uv)*9.0); // iris shape / shading
+
+    
+
+    float a = atan(uv.y, uv.x)*3.0; // angle from center of eye
+
+    float i = p2 * sin(a*18.0); // iris pattern
+
+    float vb = smoothstep(0.34, 0.5, length(uv*8.0)) * 0.5; // Where the veins stop
+
+    
+
+    // vein shape 
+
+    float y = sin(max(a, pi) * 24.0 + fbm(uv, 0.0)*364.0) * vb; 
+
+    float vv = smoothstep(0.05, 0.05 - 0.6, y) * 1.1;
+
+    
+
+    // main color
+
+    vec3 col = vec3(1.0, 1.0, 1.0) * 1.5;
+
+    
+
+    // iris and vein color
+
+    vec3 iris = mix(vec3(0.01, 0.5, 0.6), vec3(0.0, 0.8, 0.7), i);
+
+    vec3 veins = vec3(1.0, 0.0, 0.0);
+
+    
+
+    // make the final color
+
+    col = mix(col, veins, vv);
+
+    col = mix(col, iris , p2 );
+
+   
+
+    
+
+    return col * p; // add the pupil
+
+    
+
+}
+
+
+
+// not used unless you uncomment in main. A mask that blinks.
+
+float mask(vec2 uv)
+
+{
+
+    uv.x *= 0.58;
+
+    if(mod(time, 6.0) > 5.9)
+
+    {
+
+    	uv.y *= 20.0;
+
+    }
+
+    float m = smoothstep(0.3, 0.27, length(uv));
+
+    return m;
+
+    
+
+}
+
+
+
+
+
+void main()
+
+{
+
+    vec2 uv = 2.0 * vec2(gl_FragCoord.xy - 0.5*resolution.xy)/resolution.y;
+
+     
+
+    uv.y+=1.0;
+
+ 	
+
+    uv = mod(((uv)), 2.0) - 1.0;
+
+    
+
+    // Ray origin (camera)
+
+    vec3 ro = vec3(0.0, 0.0, 0.0); 
+
+    
+
+    // Ray direction
+
+    vec3 rd = normalize(vec3(uv,2.0));
+
+   
+
+    
+
+    float t = 0.0; // total distance
+
+    float d = 0.0; // distance to nearest scene object
+
+    
+
+    float minDist = 999.0; // If a ray hits nothing, this will store how close it came to hitting.
+
+    						// I use this for the black outline
+
+    
+
+    bool didHit = false;
+
+    
+
+    for (int i = 0; i < 30; i++) // raymarch
+
+    {
+
+        d = map(ro + rd*t);
+
+        
+
+        minDist = min(minDist, d); // Getting the minimum distance to an object for this ray
+
+        
+
+        if(abs(d)<0.001) // hit somthing
+
+        {
+
+            minDist = abs(d);
+
+            didHit = true;
+
+            break;  
+
+        }
+
+        if(t>FAR) // went too far
+
+        {
+
+            minDist = min(minDist, d);
+
+            t = FAR;
+
+            break;
+
+        }
+
+        
+
+        t += d * DISTANCE_BIAS;
+
+    }
+
+    
+
+    vec3 norm = getNormal(ro + rd * t); // normals of hit location in scene
+
+    
+
+     // Lighting
+
+    vec3 l = ro + vec3(1.0, 1.0, -1.0);  
+
+    float lDist = max(length(l), 0.001); 
+
+    float atten = 1.0 / (1.0 + lDist*0.2 + lDist*lDist*0.1); 
+
+    
+
+    
+
+    vec3 col = vec3(0.8, 0.4, 0.1);
+
+    
+
+    float spec = pow(max(dot(reflect(-l - vec3(0.0, -0.5, 1.4), norm), -rd ), 0.0 ), 16.0);
+
+    float diff = max(dot(norm + 0.5, l), 0.0); 
+
+    
+
+    norm.xz *= rot(-m().x * 0.9);
+
+    norm.yz *= rot(-m().y * 0.9);
+
+    norm.yz *= rot(pi / 2.0);
+
+    
+
+    
+
+    vec3 objCol = vec3(0.25, 0.25, 0.25) * eye(norm.xz * 0.08); 
+
+   
+
+    if(didHit)
+
+    {
+
+    	col = mix(col, (objCol*(diff + 0.05) + vec3(1.0, 0.6, 0.2)*spec*0.08 ) * atten, 1.0);
+
+    }
+
+    else
+
+    {
+
+        col = mix(col, vec3(0.0, 0.0, 0.0), 0.017 / minDist); // black outline
+
+    }
+
+ 
+
+    // Experiment with a mask that blinks
+
+    //col = mix(vec3(0.7, 0.7, 0.6)*uv.y,col , mask(uv));
+
+    
+
+   
+
+    // final color with the gamma correction 
+
+    gl_FragColor = vec4(sqrt(clamp(col, 0.0, 1.0)), 1.0);
+
+ 
+
+}

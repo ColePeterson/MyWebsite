@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title id = "sTitle">Shader</title>
+    <link rel="stylesheet" href ="http://colepeterson.net/SiteContent/style.css">
+      
+    <script type="text/javascript" src="http://colepeterson.net/Javascript/jquery-3.4.0.js"></script>
+	<script type="text/javascript">
+	</script>
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        scroll-behavior: smooth;
+        width: 100%;
+        overflow-x: hidden;
+    }
+   
+    .description{
+        text-align:center;
+        font-size:25px;
+    }
+
+    .btn{
+        background-color: rgb(180,180,190); 
+        border: solid 2px;
+        border-radius: 8px;
+        color: black;
+        padding: 6px 8px;
+        font-size:30px;
+        margin-left:auto;
+
+        -webkit-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+        -moz-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+        box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.75);
+    }
+
+    .btn:hover{
+        cursor: pointer;
+        background-color: rgb(141, 182, 157);
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        transform: scale(0.95, 0.95);
+        -ms-transform: scale(0.95, 0.95);
+    }
+
+    .dt{
+        margin-top:5px;
+        font-size:50px;
+        text-align:center;
+        color:rgb(143, 143, 143);
+    }
+
+
+    #canvas{
+        border-width: 2px;
+        border-style:none;
+        border-radius: 8px;
+        border-color: gray;
+        -webkit-box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.75);
+        -moz-box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.75);
+        box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.75);
+        margin-top: 20px;
+    }
+
+    #canvas:hover{
+        cursor: pointer;
+    }
+
+
+    #sTime{
+        display: inline-block;
+        font-size: 16px;
+        font-weight: 300;
+        margin-top: 0.5rem;
+        font-family: "Poppins", sans-serif;
+    }
+
+    #sd{
+        text-align:center;
+        margin-top:12px;
+        
+        background: linear-gradient(90deg, rgba(101,101,101,0) 0%, rgba(134,134,134,1) 47%, rgba(99,99,99,0) 100%);
+    }
+
+
+    .Page{
+        display: flex;
+        flex-direction: column;
+        width:100%;
+        min-height:100vh;
+        height:auto;
+        background-color:rgb(29, 34, 41);
+        background: linear-gradient(0deg,rgb(13, 17, 19) 0%, rgba(29, 34, 41, 1) 100%);
+        color:rgb(0, 0, 0);
+        margin-bottom: 0px;
+        scroll-snap-align: start;
+        box-sizing: border-box;
+    }
+
+    /* Container for page title */
+    .ShaderTitle-Container{
+        display: block;
+        text-align: center;
+        justify-content: center;
+        font-size:3rem;
+        color:#c4c4c4;
+        text-shadow: 0 0 18px rgba(0, 0, 0, 0.1);
+        font-family: "Poppins", sans-serif;
+        font-weight: 700;
+
+    }
+
+    .Controls-Container{
+        display: flex;
+        text-align: center;
+        margin: 0 auto;
+        margin-top: 0.5rem;
+        width: 50%;
+        justify-content: center;
+        color: white;
+        border-radius: 8px;
+    }
+
+    .img-Control {
+        display: flex;
+        justify-content: center;
+        border-radius: 8px;
+        gap: 1rem;
+        margin-right: 2rem;
+        margin-left: 2rem;
+        border: none;
+        background: transparent;
+        outline: none;
+        overflow: hidden;
+        width: 32px;
+        height: 32px;
+    }
+
+    .img-Control img {
+        display: block;
+        margin: 0;
+        border: none;
+    }
+
+    /* Hover effect */
+    .img-Control:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+        filter: brightness(1.5);
+        cursor: pointer;
+    }
+
+    /* Click / active */
+    .img-Control:active {
+        transform: scale(0.97);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) inset;
+        filter: brightness(0.9);
+    }
+
+    .TextBox{
+        color:rgb(0, 0, 0);
+        text-align: center;
+        font-weight: 600;
+        font-family: "Poppins", sans-serif;
+    }
+    
+
+</style>
+
+
+
+
+
+<script>
+    var shdrsrc = window.localStorage.getItem("sid");    
+    var srcList = window.localStorage.getItem("sids");   
+    var nFiles = window.localStorage.getItem("nfiles"); 
+    var sName = window.localStorage.getItem("snm");
+    var sDesc = window.localStorage.getItem("sdesc");
+</script>
+
+
+
+<body>
+
+    <div class = "Page">
+        
+
+        <div class = "ShaderTitle-Container">
+            <div id="Title"></div>
+        </div>
+
+        <div style = "text-align: center; ">
+            <canvas id="canvas" width="1200" height="675"></canvas>
+        </div>	
+
+        
+        <div class = "Controls-Container">
+            <button class = "img-Control" onclick="PlayPauseShader()" id = "ppbtn">
+                <img src = "Images/control_pause.jpg" id = "PlayButtonImg">
+            </button>
+            <button class = "img-Control" onclick="RestartShader();">
+                <img src = "Images/control_restart.jpg">
+            </button>
+            <button class = "img-Control" onclick="openFullscreen();">
+                <img src = "Images/control_fullscreen.jpg">
+            </button>
+
+            <div id = "sTime"></div>
+        </div>
+
+        <br>
+        <div class = "TextBox" style = "color: white;">
+            Width: <input type="text" class = "TextBox" size = "4" id="widthIN" value=1200 onChange="ChangeResolution();" />
+            Height: <input type="text" class = "TextBox" size = "4" id="heightIN" value=675 onChange="ChangeResolution();" />
+        </div>
+
+
+        
+        <p id="sd"class = "description"></p>
+        
+    </div>
+</body>
+
+
+
+
+
+<script>
+
+var ps = false; // Pause shader 
+var rs = false; // Restart shader
+var ChangeRes = false; // Change shader resolution
+
+var initTime = 0; // Time shader starts or unpaused
+var t = 0; // Current time of shader
+
+// TODO: Change these to actual paths on server
+var playButtonSrc = "Images/control_play.jpg";
+var pauseButtonSrc = "Images/control_pause.jpg";
+var fsButtonSrc = "Images/control_fullscreen.jpg";
+var restartButtonSrc = "Images/control_restart.jpg";
+
+function fTest(){alert("function test");}
+
+function RestartShader(){
+	rs = true;
+}
+function ChangeResolution(){
+	var cW = document.getElementById("widthIN").value;
+	var cH = document.getElementById("heightIN").value;
+    
+	canvas.width = cW;
+	canvas.height = cH;
+	
+	ChangeRes = true;
+}
+
+
+function PlayPauseShader() {
+	if(!ps)
+	{
+        document.getElementById("PlayButtonImg").src = playButtonSrc;
+		ps = true;
+	}
+	else
+	{
+        let d = new Date();
+        initTime = d.getTime() - t*1000;
+		document.getElementById("PlayButtonImg").src = pauseButtonSrc;
+		ps = false;
+	}
+	
+	return ps;
+}
+
+
+// Keypress
+document.onkeydown = function(evt) {
+   evt = evt || window.event;
+    // Escape (exit fullscreen)
+    if (evt.keyCode == 27) 
+	{
+       canvas.width = document.getElementById("widthIN").value;
+	   canvas.height = document.getElementById("heightIN").value;
+	   ChangeRes = true;
+    }
+};
+
+
+function openFullscreen(){
+    var el = document.getElementById('canvas');
+    
+    canvas.width = screen.width;
+    canvas.height = screen.height;
+    
+    ChangeRes = true;
+    
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    } 
+    else {
+        canvas.requestFullscreen();
+    }
+}
+
+// Event for enter and exit fullscreen
+function fullscreenchanged(event) {
+    // Enter fullscreen event
+  if (document.fullscreenElement) {
+    
+  } 
+  else { // Exit fullscreen event
+    ChangeRes = true;
+    canvas.width = document.getElementById("widthIN").value;
+	canvas.height = document.getElementById("heightIN").value;
+  }
+}
+
+document.addEventListener("fullscreenchange", fullscreenchanged);
+
+
+</script>
+
+
+
+
+
+
+
+
+
+<!-- Vertex shader -->
+<script type="x-shader" id="vs">
+	attribute vec2 av;
+	
+	void main () 
+	{
+		gl_Position = vec4(av*2.-1.,0,1);
+	}
+</script>
+
+
+
+
+<!-- Fragment shader 2??-->
+<script type="x-shader" id="fs1">
+	precision mediump float;
+	
+	uniform vec2 resolution;
+
+	uniform sampler2D channel0;
+    uniform sampler2D channel1;
+
+	uniform float time;
+	uniform vec2 mouse;
+	
+	void main () 
+	{
+		gl_FragColor = texture2D (channel0, gl_FragCoord.xy/resolution) ;
+	}
+ 
+</script>
+
+
+<!-- WebGL Stuff -->
+<script>
+	
+function Framebuffer (gl, n, type, w, h=w) {
+	this.gl = gl;
+	this.type = type;
+	this.n = n;
+	this.w = w;
+	this.h = h;
+	this.width = w;
+	this.height = h;
+	this.fbo = gl.createFramebuffer();
+	this.renderbuffer = gl.createRenderbuffer();
+	this.texture = gl.createTexture();
+	gl.activeTexture(gl['TEXTURE' + this.n]);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo);
+	gl.bindTexture(gl.TEXTURE_2D, this.texture);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, this.type, null);
+	gl.bindRenderbuffer(gl.RENDERBUFFER, this.renderbuffer);
+	gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, w, h);
+	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, 0);
+	gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.renderbuffer);
+	this.write = function (typedArray) {
+		var gl = this.gl;
+		gl.activeTexture(gl["TEXTURE" + this.n]);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, this.type, typedArray);}
+	this.source = function (element) {
+		var gl = this.gl;
+		gl.activeTexture(gl["TEXTURE" + this.n]);
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, element);
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);}
+    this.route = function () {
+        gl.activeTexture(gl["TEXTURE"+this.n]);
+        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+        gl.bindFramebuffer(gl.FRAMEBUFFER,  this.fbo);
+	    gl.viewport(0,0,this.w,this.h);}
+
+    this.bindFrameBuffer = function () {
+        gl.bindFramebuffer(gl.FRAMEBUFFER,  this.fbo);
+	    gl.viewport(0,0,this.w,this.h);}
+
+    this.activeTexture = function () {
+        gl.activeTexture(gl["TEXTURE"+this.n]);
+	    gl.viewport(0,0,this.w,this.h);}
+
+    this.bindTexture = function () {
+        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+	    gl.viewport(0,0,this.w,this.h);}
+}
+
+
+function createProgram (gl, vstr, fstr) 
+{
+
+    if (vstr.length < 50) vstr = document.getElementById(vstr).textContent;
+    if (fstr.length < 50) fstr = document.getElementById(fstr).textContent;
+   
+    var program = gl.createProgram(),
+        vshader = createShader(gl, vstr, gl.VERTEX_SHADER),
+        fshader = createShader(gl, fstr, gl.FRAGMENT_SHADER);
+    gl.attachShader(program, vshader);
+    gl.attachShader(program, fshader);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        throw gl.getProgramInfoLog(program);
+    }
+    return program;
+}
+
+function createShader (gl, str, type) 
+{
+    var shader = gl.createShader(type);
+    gl.shaderSource(shader, str);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) 
+    {
+        alert(gl.getShaderInfoLog(shader)+str);
+        throw gl.getShaderInfoLog(shader);
+    }
+    return shader;
+}
+	
+	
+function initAttrib (gl, program) 
+{
+    gl.useProgram(program);
+    var attrib = gl.getAttribLocation(program, 'av');
+    gl.enableVertexAttribArray(attrib);
+    gl.vertexAttribPointer(attrib, 2, gl.FLOAT, gl.FALSE, 0, 0);
+    return initAttrib;}
+	
+	
+function setUni (gl, program, name, args, int = false) 
+{
+    gl.useProgram(program);
+    if (!program[name]) program[name] = gl.getUniformLocation (program, name);
+    
+    if (int || typeof(args) == "boolean") 
+    {
+        gl.uniform1i(program[name], args);
+    }
+    else if (args.constructor == Array) 
+    {
+        //console.log(args);
+        gl["uniform" + args.length + "fv"](program[name], args);
+    }
+    else if (typeof(args) == "number") 
+    {
+        gl.uniform1f(program[name], args);
+    }
+	else if (args.constructor == Framebuffer)
+	{
+	    gl.uniform1i(program[name], args.n);
+	}
+	else
+	{
+	    console.log("its nothing");
+	    
+	}
+    return setUni;
+	
+}
+	
+	
+function draw (gl, program, dest=false, type=gl.TRIANGLES, a=0, b=6, clear = true) 
+{
+    gl.useProgram (program);
+    if (dest) dest.route(); else 
+    {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        gl.viewport(0, 0, canvas.width, canvas.height);
+    }
+    if (clear) gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.drawArrays(type,a,b);
+}
+
+function draw2 (gl) 
+{
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES,0,6);
+}	
+
+
+function initVerts (gl, w=0, h=w) 
+{
+    var arr = new Float32Array(w*h*2+12),sqr = [0,0,1,0,0,1, 1,1,1,0,0,1], i = 0;
+	for (j = 0; j < 12; j++) arr[i++] = sqr[j];
+	for (var y = 0; y < h; y ++) 
+	{
+		for (var x = 0; x < w; x ++) 
+		{
+			arr[i++] = x/w;
+			arr[i++] = y/h;
+		}
+	}
+    var buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, arr, gl.STATIC_DRAW);
+	return arr;
+} 
+	
+
+function resize(canvas) 
+{
+  var displayWidth  = canvas.clientWidth;
+  var displayHeight = canvas.clientHeight;
+ 
+  if (canvas.width  != displayWidth ||
+      canvas.height != displayHeight) {
+ 
+    canvas.width  = displayWidth;
+    canvas.height = displayHeight;
+  }
+}
+
+// Some global stuff
+var m = []; // mouse data
+var mbdown = false;
+var frameCount = 0;
+
+
+function updateMouseCoords(canvas)
+{
+    var rect = canvas.getBoundingClientRect();
+    m[0] = event.clientX - rect.left;
+    m[1] = event.clientY - rect.top;
+    m[1] = m[1] * -1. + rect.height;
+    m[2] = mbdown;
+}
+
+
+function startSinglePassShader()
+{
+    // Get reference to canvas and context
+    var canvas = document.getElementById("canvas");
+    var gl = canvas.getContext("webgl");
+
+    // vertices to draw to (fullscreen 2D rectangle)
+    var verts = initVerts (gl);
+    
+    // Create shader programs
+    var programImage = createProgram (gl, "vs", "fs1");
+    var program = createProgram (gl, "vs", shdrsrc);
+
+    // Create and init buffer to draw to
+    var ext = gl.getExtension('OES_texture_float');
+    var lin = gl.getExtension('OES_texture_float_linear');
+    var fbo = new Framebuffer (gl, 0, gl.FLOAT, canvas.width, canvas.height);
+    initAttrib (gl, program);
+    
+    // Init resolution in shader
+    setUni (gl, program, "resolution", [canvas.width, canvas.height]);
+    setUni (gl, programImage, "resolution", [canvas.width, canvas.height]);
+
+    // Setup mouse event listeners
+    canvas.addEventListener('mousemove', function(event) {
+        updateMouseCoords(canvas);
+        setUni (gl, program, "mouse", m);
+    }, false);
+    canvas.addEventListener('mousedown', function(event) {
+        mbdown = true;
+        updateMouseCoords(canvas);
+        setUni (gl, program, "mouse", m);
+    }, false);
+    canvas.addEventListener('mouseup', function(event) {
+        mbdown = false;
+        updateMouseCoords(canvas);
+        setUni (gl, program, "mouse", m);
+    }, false);
+
+    // Init start time
+    let d = new Date();
+    initTime = d.getTime();
+
+    // Main loop
+    function animateSinglePass () 
+    {
+		requestAnimationFrame (animateSinglePass);
+		
+        resize(gl.canvas);
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+        
+        // Restart shader
+        if(rs)
+        {
+            let d = new Date();
+            initTime = d.getTime();
+            t = 0;
+            rs = false;
+            frameCount = 0;
+        }
+
+        // Change resolution
+        if(ChangeRes)
+        {
+            // Create new buffer with new size, update shader uniforms
+            delete fbo;
+            fbo = new Framebuffer (gl, 0, gl.FLOAT, canvas.width, canvas.height);
+            setUni (gl, program, "resolution", [canvas.width,  canvas.height]);
+            setUni (gl, programImage, "resolution", [canvas.width,  canvas.height]);
+            ChangeRes = false;
+        }
+        
+        // paused
+        if(ps)
+        {
+            document.getElementById("sTime").innerHTML = t.toFixed(2);
+            setUni (gl, program, "time", t);
+        }
+        else // not paused
+        {
+            let currDate = new Date(); 
+            let dif = currDate.getTime() - initTime;
+            t = dif * 0.001;
+            document.getElementById("sTime").innerHTML = t.toFixed(2);
+            setUni (gl, program, "time", t); 
+        }
+        
+        draw (gl, program, fbo);
+        setUni (gl, programImage, "channel0", fbo);
+        draw (gl, programImage);
+        
+    }
+
+    animateSinglePass(); // Start loop
+}
+
+
+
+
+function startMultiPassShader(fps)
+{   
+    var canvas = document.getElementById("canvas");
+    var gl = canvas.getContext("webgl");
+    var verts = initVerts (gl);
+
+    // Shader programs 
+    var programs = [];
+
+    var ext = gl.getExtension('OES_texture_float');
+    var lin = gl.getExtension('OES_texture_float_linear');
+
+    // Buffers to write to. (2 sets for ping pong)
+    var fbos = [];
+    var fbos2 = [];
+
+    // Create image program
+    let imgSrc = window.localStorage.getItem("sids0");
+    programImage = createProgram (gl, "vs", imgSrc);
+    setUni (gl, programImage, "resolution", [canvas.width,  canvas.height]);
+
+    // for every buffer shader source, create a program and two framebuffers (for ping ponging)
+    for(let i = 1; i < nFiles; i++){
+        let srcFile = window.localStorage.getItem("sids" + i); 
+        
+        var newProgram = createProgram (gl, "vs", srcFile);
+        programs.push(newProgram);
+        initAttrib (gl, programs[i-1]);
+        setUni (gl, programs[i-1], "resolution", [canvas.width, canvas.height]);
+
+        var newFBO = new Framebuffer (gl, i, gl.FLOAT, canvas.width, canvas.height);
+        fbos.push(newFBO);
+
+        var newFBO2 = new Framebuffer (gl, i, gl.FLOAT, canvas.width, canvas.height);
+        fbos2.push(newFBO2);
+    }
+
+    // Setup canvas event listeners
+    canvas.addEventListener('mousemove', function(event) 
+    {
+        updateMouseCoords(canvas);
+
+        // Set mouse uniform for all shaders
+        for(let i = 0; i < programs.length; i++){
+            setUni (gl, programs[i], "mouse", m);
+        }
+    }, false);
+        
+    canvas.addEventListener('mousedown', function(event) 
+    {
+        mbdown = true;
+        updateMouseCoords(canvas);
+
+        // Set mouse uniform for all shaders
+        for(let i = 0; i < programs.length; i++){
+            setUni (gl, programs[i], "mouse", m);
+        }
+    }, false);
+
+    canvas.addEventListener('mouseup', function(event) 
+    {
+        mbdown = false;
+        updateMouseCoords(canvas);
+
+        // Set mouse uniform for all shaders
+        for(let i = 0; i < programs.length; i++){
+            setUni (gl, programs[i], "mouse", m);
+        }
+    }, false);
+
+
+    // Init start time
+    let d = new Date();
+    initTime = d.getTime();
+
+    var previousDelta = 0;
+
+    // Main loop
+	function animateMultiPass (currentDelta) 
+    {
+		requestAnimationFrame (animateMultiPass);
+		
+        var delta = currentDelta - previousDelta;
+
+        if (fps && delta < 1000 / fps) 
+            return;
+        
+        resize(gl.canvas);
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+        
+        // Restart shader
+        if(rs)
+        {
+            let d = new Date();
+            initTime = d.getTime();
+            t = 0;
+            rs = false;
+            frameCount = 0;
+        }
+
+        // Change resolution
+        if(ChangeRes)
+        {
+            // for every pass, make new buffer with new resolution
+            for(let i = 0; i < fbos.length; i++){
+                delete fbos[i];
+                fbos[i] = new Framebuffer (gl, i, gl.FLOAT, canvas.width, canvas.height);
+
+                delete fbos2[i];
+                fbos2[i] = new Framebuffer (gl, i, gl.FLOAT, canvas.width, canvas.height);
+            }
+            
+            // Set resolution uniforms
+            for(let i = 0; i < programs.length; i++){
+                setUni (gl, programs[i], "resolution", [canvas.width,  canvas.height]);
+            }
+
+            // Set image shader resolution uniform
+            setUni (gl, programImage, "resolution", [canvas.width,  canvas.height]);
+            ChangeRes = false;
+        }
+        
+        // Paused
+        if(ps){
+            document.getElementById("sTime").innerHTML = "Time: " + + t.toFixed(2);
+
+            for(let i = 0; i < programs.length; i++){
+                setUni (gl, programs[i], "time", t);
+            }
+        }
+        else{ // Not paused
+            let currDate = new Date(); 
+            let dif = currDate.getTime() - initTime;
+            t = dif * 0.001;
+            
+            document.getElementById("sTime").innerHTML = "Time: " + t.toFixed(2);
+
+            for(let i = 0; i < programs.length; i++){
+                setUni (gl, programs[i], "time", t);
+            }
+        }
+        
+        // Aint paused
+        if(!ps)
+        {
+            // For every buffer in the system
+            for(let i = 0; i < programs.length; i++)
+            {
+                // Ping pong buffers
+                for(let j = 0; j < 2; j++)
+                {
+                    // Start shader
+                    gl.useProgram (programs[i]);
+
+                    // First buffer
+                    if(j == 0)
+                    {
+                        fbos[i].bindFrameBuffer(); // Bind first buffer
+                        fbos[i].activeTexture(); // First buffer texture is active texture
+                        fbos2[i].bindTexture(); // Bind second buffer's texture
+                    }
+                    else if(j == 1) // Second buffer
+                    {
+                        fbos2[i].bindFrameBuffer(); // Bind second buffer
+                        fbos2[i].activeTexture();// Second buffer texture is active texture
+                        fbos[i].bindTexture(); // Bind second buffer's texture
+                    }
+
+                    // Update sampler uniforms
+                    for(let k = 0; k < programs.length; k++)
+                    {
+                        if(i == k)
+                        {
+                            if(j == 0)
+                                setUni (gl, programs[k], "channel" + i, fbos[i]);
+                            else
+                                setUni (gl, programs[k], "channel" + i, fbos2[i]);
+                        }
+                        else
+                            setUni (gl, programs[k], "channel" + i, fbos[i]);
+                    }
+
+                    // Draw to current buffer
+                    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                    gl.drawArrays(gl.TRIANGLES,0,6);
+
+                    // Update frame uniform
+                    setUni (gl, programs[i], "frame", frameCount);
+                }
+
+                // Set "image" shader samplers
+                setUni (gl, programImage, "channel" + i, fbos[i]); 
+                setUni (gl, programImage, "frame", frameCount); 
+            }
+
+        
+        
+            // Bind the default framebuffer
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+            gl.viewport(0, 0, canvas.width, canvas.height);
+
+            // Draw to default framebuffer
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            gl.drawArrays(gl.TRIANGLES,0,6);
+
+            frameCount++;
+            
+            previousDelta = currentDelta;
+        }
+    }
+
+
+    animateMultiPass(); // Start loop
+}
+
+
+
+
+
+window.onload = function () 
+{
+    document.getElementById("sTitle").innerHTML = sName;
+    document.getElementById("Title").innerHTML = sName;
+    document.getElementById("sd").innerHTML = sDesc;
+
+    const screenWidth = window.screen.width;
+    const screenHeight = window.screen.height;
+
+    document.getElementById("widthIN").value = window.innerWidth/1.5;
+    document.getElementById("heightIN").value = window.innerHeight/1.4;
+
+    ChangeResolution();
+
+    
+
+    // Multi pass shader
+    if(nFiles > 1){
+        startMultiPassShader(120);
+        return;
+    }
+    else{ // Single pass shader
+        startSinglePassShader();
+        return;
+    }
+}
+
+
+
+</script>
+
+
+
+</html>
