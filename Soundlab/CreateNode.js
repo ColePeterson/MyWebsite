@@ -468,18 +468,18 @@ $(document).ready(function() {
 
     //nodes.push(createNode("Graph", 300, 350));
 
-    //nodes.push(createNode("Stereo", 900, 450));
-    //nodes.push(createNode("Oscillator", 600, 350));
-    //nodes.push(createNode("Oscillator", 600, 550));
-    //nodes.push(createNode("Time", 400, 420));
+    nodes.push(createNode("Stereo", 900, 450));
+    nodes.push(createNode("Oscillator", 600, 350));
+    nodes.push(createNode("Oscillator", 600, 550));
+    nodes.push(createNode("Time", 400, 420));
 
-    //nodes[0].outputs[0].connect(outputNode.inputs[0]);
-    //nodes[1].outputs[0].connect(nodes[0].inputs[0]);
-    //nodes[1].outputs[0].connect(nodes[0].inputs[1]);
+    nodes[0].outputs[0].connect(outputNode.inputs[0]);
 
-    //nodes[2].outputs[0].connect(nodes[1].inputs[1]);
-    //nodes[3].outputs[0].connect(nodes[1].inputs[1]);
-   // nodes[3].outputs[0].connect(nodes[2].inputs[1]);
+    nodes[1].outputs[0].connect(nodes[0].inputs[0]);
+    nodes[2].outputs[0].connect(nodes[0].inputs[1]);
+
+    nodes[3].outputs[0].connect(nodes[1].inputs[1]);
+    nodes[3].outputs[0].connect(nodes[2].inputs[1]);
 
     
     initialize();
