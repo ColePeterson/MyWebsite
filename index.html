@@ -295,6 +295,7 @@ span{
     display: flex;
     flex-direction: column;
     margin-right: 2rem;
+    text-decoration: none;
     border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
 
@@ -337,6 +338,7 @@ span{
     font-size: 1.15rem;
     font-weight: 700;
     color: #ffffff;
+    text-decoration: none;
 }
 
 .card-text {
@@ -344,10 +346,15 @@ span{
     font-size: 0.95rem;
     line-height: 1.4;
     color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
 }
 .card:hover {
     border-color: rgba(0, 255, 255, 0.4);
     cursor: pointer;
+}
+
+.card-body:active{
+    text-decoration: none;
 }
 
 .card:hover .card-image img {
@@ -548,18 +555,20 @@ span{
             </div>
         </a>
 
-        <div class="card">
-            <div class="card-image">
-                <img src="Images/Card_Audio.png" alt="Audio Synthesis">
-            </div>
+        <a href = "Soundlab/soundlab.html">
+            <div class="card">
+                <div class="card-image">
+                    <img src="Images/Card_Audio.png" alt="Audio Synthesis">
+                </div>
 
-            <div class="card-body">
-                <h3 class="card-title">Audio Synthesis Via Node Graph</h3>
-                <p class="card-text">
-                Create sounds using oscillators and math in this interactive tool!
-                </p>
+                <div class="card-body">
+                    <h3 class="card-title">Audio Synthesis Via Node Graph</h3>
+                    <p class="card-text">
+                    Create sounds using oscillators and math in this interactive tool!
+                    </p>
+                </div>
             </div>
-        </div>
+        </a>
 
         <a href = "https://github.com/ColePeterson/ColeEngine" target="_blank" rel="noopener">
             <div class="card">

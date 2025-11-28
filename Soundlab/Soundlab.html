@@ -12,6 +12,41 @@
     }
 
 
+    .Button-Container{
+        display: block;
+        text-align: center;
+        justify-content: center;
+        width:50%;
+    }
+
+    .Button-Control{
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: white;
+        color: black;
+        width:15%;
+        margin-bottom: 1rem;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    .Button:hover{
+        transform: scale(1.1);
+    }
+
+    .Info-Container{
+        display: block;
+        background-color: rgb(0, 0, 0);
+        width: fit-content;
+        text-align: center;
+    }
+
+    .Info{
+        color: rgb(255, 255, 255);
+        text-align: center;
+    }
+
 </style>
 
 <html>
@@ -20,11 +55,21 @@
         <link rel="stylesheet" href="node_style.css">
     </head>
 
+    <div class = "Info-Container">
+        <div class = "Info">To place a node, hold a key on the keyboard and click anywhere in the graph. <br> 'A' = add, 'M' = multiply <br> 'S' = subtract, 'C' = cosine <br>
+        'T' = time, '2' = stereo node <br> 'P' = pi2, 'O' = oscillator
+        </div>
+    </div>
     
-    <button type="button" onclick="startAudio()">Start Audio</button>
-    <button type="button" onclick="stopAudio()">Stop Audio</button>
-    <button type="button" onclick="testGraphics()">Test Graphs</button>
-    <button type="button" onclick="evaluateAllNodes()">Evaluate All Nodes</button>
+    <div class = "Button-Container">
+        <button class = "Button-Control" onclick="startAudio()">Start Audio</button>
+        <button class = "Button-Control" onclick="stopAudio()">Stop Audio</button>
+        <button class = "Button-Control" onclick="testGraphics()">Test Graphs</button>
+        <button class = "Button-Control" onclick="evaluateAllNodes()">Evaluate All Nodes</button>
+
+    </div>
+
+
     <input type="number" id="test" name="test" min="-1" max="1" step="0.01" value = "0.0">
     <p id = "bSize"></p>
     <p id = "nSec"></p>

@@ -72,6 +72,8 @@ function createNode(type, x, y){
                 node.outputs[0].value = product;
             }
         );
+
+        nodes.push(node);
         return node;
     }
     else if(type == "Stereo"){
@@ -130,6 +132,8 @@ function createNode(type, x, y){
                 node.outputs[0].value = node.inputs[0].value;
             }
         );
+        nodes.push(node);
+        timeNodes.push(node);
         return node;
     }
     else if(type == "Pi2"){
@@ -396,7 +400,7 @@ document.body.onmousedown = function (e) {
         nodes.push(createNode("Add", mouse.x, mouse.y));
     }
     else if(keyState[77]){ // M;
-        nodes.push(createNode("Multiply", mouse.x, mouse.y));
+        createNode("Multiply", mouse.x, mouse.y);
     }
     else if(keyState[83]){ // S;
         nodes.push(createNode("Subtract", mouse.x, mouse.y));
@@ -411,9 +415,7 @@ document.body.onmousedown = function (e) {
         nodes.push(createNode("Value", mouse.x, mouse.y));
     }
     else if(keyState[84]){ // T
-        let nTimeNode = createNode("Time", mouse.x, mouse.y);
-        nodes.push(nTimeNode);
-        timeNodes.push(nTimeNode);
+        createNode("Time", mouse.x, mouse.y);
     }
     else if(keyState[80]){ // p
         nodes.push(createNode("Pi2", mouse.x, mouse.y));
@@ -473,15 +475,14 @@ $(document).ready(function() {
     nodes.push(createNode("Oscillator", 600, 550));
     nodes.push(createNode("Time", 400, 420));
 
-    nodes[0].outputs[0].connect(outputNode.inputs[0]);
+    nodes[1].outputs[0].connect(nodes[0].inputs[0]); // Connect oscillator 1 to stereo input 1
+    nodes[2].outputs[0].connect(nodes[0].inputs[1]); // Connect oscillator 2 to stereo input 2
 
-    nodes[1].outputs[0].connect(nodes[0].inputs[0]);
-    nodes[2].outputs[0].connect(nodes[0].inputs[1]);
+    nodes[3].outputs[0].connect(nodes[1].inputs[1]); // Connect time 1 to oscillator 1
+    nodes[3].outputs[0].connect(nodes[2].inputs[1]); // Connect time 2 to oscillator 2
 
-    nodes[3].outputs[0].connect(nodes[1].inputs[1]);
-    nodes[3].outputs[0].connect(nodes[2].inputs[1]);
+    nodes[0].outputs[0].connect(outputNode.inputs[0]); // Connect stereo to output
 
-    
     initialize();
 
 });
