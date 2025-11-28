@@ -26,6 +26,7 @@ function createNode(type, x, y){
                 node.outputs[0].value = sum;
             }
         );
+        nodes.push(node);
         return node;
     }
     else if(type == "Subtract"){
@@ -40,6 +41,7 @@ function createNode(type, x, y){
                 node.outputs[0].value = node.inputs[0].value - node.inputs[1].value;
             }
         );
+        nodes.push(node);
         return node;
     }
     else if(type == "Value"){
@@ -88,6 +90,7 @@ function createNode(type, x, y){
                 node.outputs[0].value = {x: node.inputs[0].value, y: node.inputs[1].value};
             }
         );
+        nodes.push(node);
         return node;
     }
     else if(type == "Splitter"){
@@ -103,6 +106,7 @@ function createNode(type, x, y){
                 node.outputs[1].value = inputs[0].value.y;
             }
         );
+        nodes.push(node);
         return node;
     }
     else if(type == "Output"){
@@ -118,6 +122,7 @@ function createNode(type, x, y){
                 node.inputs[0].value.y = node.inputs[0].connectedOutput.value.y;
             }
         );
+        
         return node;
     }
     else if(type == "Time"){
@@ -148,6 +153,7 @@ function createNode(type, x, y){
                 node.outputs[0].value = 6.2831853071;
             }
         );
+        nodes.push(node);
         return node;
     }
     else if(type == "Cos"){
@@ -162,6 +168,7 @@ function createNode(type, x, y){
                 node.outputs[0].value = Math.cos(node.inputs[0].value);
             }
         );
+        nodes.push(node);
         return node;
     }
     else if(type == "Mod"){
@@ -176,6 +183,7 @@ function createNode(type, x, y){
                 node.outputs[0].value = mod(node.inputs[0].value, node.inputs[1].value);
             }
         );
+        nodes.push(node);
         return node;
     }
     else if(type == "Floor"){
@@ -190,6 +198,7 @@ function createNode(type, x, y){
                 node.outputs[0].value = floor(node.inputs[0].value);
             }
         );
+        nodes.push(node);
         return node;
     }
     else if(type == "Exp"){
@@ -204,6 +213,7 @@ function createNode(type, x, y){
                 node.outputs[0].value = exp(node.inputs[0].value);
             }
         );
+        nodes.push(node);
         return node;
     }
     else if(type == "Min"){
@@ -218,6 +228,7 @@ function createNode(type, x, y){
                 node.outputs[0].value = min(node.inputs[0].value);
             }
         );
+        nodes.push(node);
         return node;
     }
     else if(type == "Max"){
@@ -232,6 +243,7 @@ function createNode(type, x, y){
                 node.outputs[0].value = max(node.inputs[0].value);
             }
         );
+        nodes.push(node);
         return node;
     }
     else if(type == "Sqrt"){
@@ -246,6 +258,7 @@ function createNode(type, x, y){
                 node.outputs[0].value = sqrt(node.inputs[0].value);
             }
         );
+        nodes.push(node);
         return node;
     }
     else if(type == "Graph"){
@@ -274,6 +287,7 @@ function createNode(type, x, y){
                 node.outputs[0].value = cos(node.inputs[1].value * node.inputs[0].value * 3.14159 * 2);
             }
         );
+        nodes.push(node);
         return node;
     }
     else if(type == "Summation"){
@@ -292,6 +306,7 @@ function createNode(type, x, y){
                 node.outputs[0].value = sum;
             }
         );
+        nodes.push(node);
         return node;
     }
     else
@@ -397,49 +412,49 @@ document.body.onmousedown = function (e) {
     getMousePos(e);
     
     if (keyState[65]){ // A
-        nodes.push(createNode("Add", mouse.x, mouse.y));
+        createNode("Add", mouse.x, mouse.y);
     }
     else if(keyState[77]){ // M;
         createNode("Multiply", mouse.x, mouse.y);
     }
     else if(keyState[83]){ // S;
-        nodes.push(createNode("Subtract", mouse.x, mouse.y));
+        createNode("Subtract", mouse.x, mouse.y);
     }
     else if(keyState[50]){ // 2
-        nodes.push(createNode("Stereo", mouse.x, mouse.y));
+        createNode("Stereo", mouse.x, mouse.y);
     }
     else if(keyState[86]){ // V
-        nodes.push(createNode("Splitter", mouse.x, mouse.y));
+       createNode("Splitter", mouse.x, mouse.y);
     }
     else if(keyState[49]){ // 1
-        nodes.push(createNode("Value", mouse.x, mouse.y));
+        createNode("Value", mouse.x, mouse.y);
     }
     else if(keyState[84]){ // T
         createNode("Time", mouse.x, mouse.y);
     }
     else if(keyState[80]){ // p
-        nodes.push(createNode("Pi2", mouse.x, mouse.y));
+        createNode("Pi2", mouse.x, mouse.y);
     }
     else if(keyState[67]){ // C
-        nodes.push(createNode("Cos", mouse.x, mouse.y));
+        createNode("Cos", mouse.x, mouse.y);
     }
     else if(keyState[70]){ // F
-        nodes.push(createNode("Floor", mouse.x, mouse.y));
+        createNode("Floor", mouse.x, mouse.y);
     }
     else if(keyState[82]){ // R
-        nodes.push(createNode("Sqrt", mouse.x, mouse.y));
+        createNode("Sqrt", mouse.x, mouse.y);
     }
     else if(keyState[66]){ // B
-        nodes.push(createNode("Mod", mouse.x, mouse.y));
+        createNode("Mod", mouse.x, mouse.y);
     }
     else if(keyState[69]){ // E
-        nodes.push(createNode("Exp", mouse.x, mouse.y));
+        createNode("Exp", mouse.x, mouse.y);
     }
     else if(keyState[89]){ // Y
-        nodes.push(createNode("Min", mouse.x, mouse.y));
+        createNode("Min", mouse.x, mouse.y);
     }
     else if(keyState[85]){ // U
-        nodes.push(createNode("Max", mouse.x, mouse.y));
+        createNode("Max", mouse.x, mouse.y);
     }
     else if(keyState[71]){ // G
         let nGraphNode = createNode("Graph", mouse.x, mouse.y);
@@ -447,10 +462,10 @@ document.body.onmousedown = function (e) {
         graphNodes.push(nGraphNode);
     }
     else if(keyState[79]){ // O
-        nodes.push(createNode("Oscillator", mouse.x, mouse.y));
+       createNode("Oscillator", mouse.x, mouse.y);
     }
     else if(keyState[88]){ // X
-        nodes.push(createNode("Summation", mouse.x, mouse.y));
+        createNode("Summation", mouse.x, mouse.y);
     }
     else{
         console.log("Down");
@@ -470,18 +485,18 @@ $(document).ready(function() {
 
     //nodes.push(createNode("Graph", 300, 350));
 
-    nodes.push(createNode("Stereo", 900, 450));
-    nodes.push(createNode("Oscillator", 600, 350));
-    nodes.push(createNode("Oscillator", 600, 550));
-    nodes.push(createNode("Time", 400, 420));
+    var stereo = createNode("Stereo", 900, 450);
+    var osc1 = createNode("Oscillator", 600, 350);
+    var osc2 = createNode("Oscillator", 600, 550);
+    var timeNode = createNode("Time", 400, 420);
 
-    nodes[1].outputs[0].connect(nodes[0].inputs[0]); // Connect oscillator 1 to stereo input 1
-    nodes[2].outputs[0].connect(nodes[0].inputs[1]); // Connect oscillator 2 to stereo input 2
+    osc1.outputs[0].connect(stereo.inputs[0]);
+    osc2.outputs[0].connect(stereo.inputs[1]);
 
-    nodes[3].outputs[0].connect(nodes[1].inputs[1]); // Connect time 1 to oscillator 1
-    nodes[3].outputs[0].connect(nodes[2].inputs[1]); // Connect time 2 to oscillator 2
+    timeNode.outputs[0].connect(osc1.inputs[1]);
+    timeNode.outputs[0].connect(osc2.inputs[1]);
 
-    nodes[0].outputs[0].connect(outputNode.inputs[0]); // Connect stereo to output
+    stereo.outputs[0].connect(outputNode.inputs[0]);
 
     initialize();
 
