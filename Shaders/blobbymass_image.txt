@@ -1,0 +1,88 @@
+precision highp float;
+uniform vec2 resolution;
+uniform float time;
+uniform vec3 mouse;
+uniform float frame;
+
+uniform sampler2D channel0;
+uniform sampler2D channel1;
+
+
+
+
+/*
+    System where particles repel each other and also a force pushes them
+    toward the center of the screen, making a blobby thing.
+*/
+
+// A few drawing options
+#define DRAW_CLOUDS
+#define DRAW_PARTICLES
+#define DRAW_BORDER
+
+
+#define R resolution.xy
+#define m vec2(R.x/R.y*(mouse.x/R.x-.5),mouse.y/R.y-.5)
+#define ss(a, b, t) smoothstep(a, b, t)
+#define ch(chan, p) texture2D(chan, p.xy / R.xy)
+
+// Number of particles
+const int nParticles = 200;
+
+// Sim speed
+float dt = .7;
+
+// Radial force (force pushing inward)
+const float bForce = 320.;
+
+// Mouse force
+const float mForce = 250.0;
+
+// Max velocity
+const vec2 maxVel = vec2(8.);
+
+// Particle friction
+const float friction = .0065;
+
+
+vec2 hash22(vec2 p){
+	vec3 p3 = fract(vec3(p.xyx) * vec3(.1031, .1030, .0973));
+    p3 += dot(p3, p3.yzx+33.33);
+    return fract((p3.xx+p3.yz)*p3.zy);
+}
+
+float smoothmin( float d1, float d2, float k ) {
+    float h = clamp( 0.5 + 0.5*(d2-d1)/k, 0.0, 1.0 );
+    return mix( d2, d1, h ) - k*h*(1.0-h); 
+}
+
+void main(){
+    vec2 u = gl_FragCoord.xy;
+    vec3 col = vec3(0.);
+    
+    // Draw particles and cloudy smoothmin stuff
+    float md = 999.;
+    for(int i = 0; i < nParticles; i++){
+        float d = length(u - ch(channel0, vec2(i,0.)).xy);
+       
+        #ifdef DRAW_CLOUDS
+        md = smoothmin(md, d, 90.); 
+        col += (ss(10.,1., md)) * (.5+.5*cos(vec3(3.0, 1.8, 0.4)*float(md)*.02));
+        #endif
+        
+        #ifdef DRAW_PARTICLES
+        col = mix(vec3(10), col, ss(.008*R.y,.008*R.y + 5., d));
+        #endif
+    }
+    
+    col /= float(nParticles);
+    col *= .6;
+    
+    // Blob border
+    #ifdef DRAW_BORDER
+    col = mix(vec3(.5), col, ss(R.y*.0003, R.y*.0003 + 0.3, abs(md*.1)));
+    #endif
+    
+    gl_FragColor = vec4(1.-exp(-col*col*5.), 1.0);
+    
+}

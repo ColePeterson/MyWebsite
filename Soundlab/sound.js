@@ -186,7 +186,7 @@ function load(buffer, startTime){
         }
     }
 
-    deltaTime = currTime() - startTime;
+    deltaTime = audioCtx.currentTime - startTime;
 }
 
 /*
@@ -196,58 +196,84 @@ This is where the buffer alternating, or ping ponging happens.
 
 
 var counter = 0.0; // Keeps track of the total time
-
+let playHead = audioCtx.currentTime;  // how far into the future we've scheduled audio
+const CHUNK_DURATION = 1.0;      // seconds (your 1-second buffer)
 
 // Play the audio in buffer B
-function runB(){
+function runB(nextTime){
     var source = audioCtx.createBufferSource();
     source.buffer = bufferB;
     source.connect(audioCtx.destination);
-    source.start(); // Start B
+    source.start(nextTime); // Start B
 
-   
     counter += bufferSeconds; // Increase total time by length of buffer in seconds
     load(bufferA, 0); // Load the next chunk of audio into buffer A
 
-    console.log("runB: " + counter);
-
-    
-
     // Once B is finished playing, run A
+    /*
     source.onended = function(){
-        //console.log("runB onEnd: " + counter);
         runA();
     }
+    */
+    console.log("runB: " + counter);
 }
 
-function runA(){
+function runA(nextTime){
     var source = audioCtx.createBufferSource();
     source.buffer = bufferA;
     source.connect(audioCtx.destination);
-    source.start(); // Start A
-    startA = currTime();
+    source.start(nextTime); // Start A
+    startA = audioCtx.currentTime;
     
     counter += bufferSeconds; // Increase total time by length of buffer in seconds
     load(bufferB, 0); // Load the next chunk of audio into buffer B
-    console.log("runA: " + counter);
+    
 
-   
-        
     // Once A is finished playing, run B
+    /*
     source.onended = function(){
-        //console.log("runA onEnd: " + counter);
         runB();
     }
+    */
+    console.log("runA: " + counter);
 }
+
+
+let player = null;
+var isA = true;
 
 // Start the recursion
 function startAudio(){
     pause = false;
     evaluateGraph();
     
-    load(bufferA, currTime()); // Buffer A will load first
-    runA();
-    startTimer();
+    load(bufferA, audioCtx.currentTime);
+
+    producerTimer = setInterval(() => {
+        const now = audioCtx.currentTime;
+        const startTime = Math.max(now, playHead);
+
+        if(isA)
+        {
+            runA(startTime);
+            load(bufferB, 0);
+            isA = false;
+        }
+        else
+        {
+            runB(startTime);
+            load(bufferA, 0);
+            isA = true;
+        }
+
+    }, 1000);
+
+
+
+    //load(bufferA, currTime()); // Buffer A will load first
+    //startTimer();
+    //runA();
+    
 }
 
 
@@ -269,16 +295,16 @@ var initialTime;
 
 function updateTimer(){
     var cTime = new Date();
-    var currentTime = cTime.getTime() - initialTime; 
+    var currentTime = caudioCtx.currentTime - initialTime; 
    
-    document.getElementById("cTime").innerHTML = "Time: " + (currentTime / 1000).toFixed(2);
+    document.getElementById("cTime").innerHTML = "Time: " + (currentTime).toFixed(2);
 
 }
 
 // Starts the playback timer
 function startTimer(){
     var cTime = new Date();
-    initialTime = cTime.getTime();
+    initialTime = audioCtx.currentTime;
 
     timerInterval = clearInterval(updateTimer);
     timerInterval = setInterval(updateTimer, 1);

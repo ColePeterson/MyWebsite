@@ -468,7 +468,7 @@ document.body.onmousedown = function (e) {
         createNode("Summation", mouse.x, mouse.y);
     }
     else{
-        console.log("Down");
+        //console.log("Down");
         //boxSelect.selecting = true;
         //boxSelect.svg = createPath({x: mouse.x, y: mouse.y}, {x: mouse.x, y: mouse.y});
 
@@ -479,16 +479,18 @@ document.body.onmousedown = function (e) {
 }
 
 
+
+// Create initial graph layout
 $(document).ready(function() {
     // Output node
-    outputNode = createNode("Output", 1400, 450);
+    outputNode = createNode("Output", 1200, 460);
 
     //nodes.push(createNode("Graph", 300, 350));
 
     var stereo = createNode("Stereo", 900, 450);
     var osc1 = createNode("Oscillator", 600, 350);
     var osc2 = createNode("Oscillator", 600, 550);
-    var timeNode = createNode("Time", 400, 420);
+    var timeNode = createNode("Time", 400, 450);
 
     osc1.outputs[0].connect(stereo.inputs[0]);
     osc2.outputs[0].connect(stereo.inputs[1]);

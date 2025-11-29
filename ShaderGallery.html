@@ -223,6 +223,35 @@ html, body {
             window.location = "ShaderViewer.html";
         }
 
+
+        async function SetMultiBufferShader(name, srcs, description)
+        {
+    
+            // Store all shader source files for use in shader viewer
+            for(let i = 0; i < srcs.length; i++)
+            {
+                const response = await fetch(srcs[i]);
+                const text = await response.text();
+                
+                window.localStorage.setItem("sids" + i, text);
+            }
+
+            const response = await fetch(srcs[0]);
+            const text = await response.text();
+
+            //window.localStorage.setItem("sids", srcList);
+            window.localStorage.setItem("sid", text);
+
+            // Store shader name and description for shader viewer
+            window.localStorage.setItem("snm", name);
+            window.localStorage.setItem("sdesc", description);
+            window.localStorage.setItem("nfiles", srcs.length);
+
+            // Navigate to shader viewer
+            window.location = "ShaderViewer.html";
+        }
+
+
         // When shader is clicked grab and store neccesary information
         document.querySelectorAll(".card").forEach(card => {
         card.addEventListener("click", (event) => {
@@ -230,7 +259,16 @@ html, body {
             const name = event.currentTarget.dataset.name;
             const description = event.currentTarget.dataset.description;
 
-                SetShader(name, path, description);
+            const path2 = event.currentTarget.dataset.path2;
+            const pass = event.currentTarget.dataset.pass;
+                if(!path2 || !pass)
+                {
+                    SetShader(name, path, description);
+                }
+                else if(pass == "2")
+                {
+                    SetMultiBufferShader(name, [path, path2], description);
+                }
             });
         });
 
@@ -247,10 +285,10 @@ html, body {
 <nav class="navbar">
     <div class="logo">Cole Peterson</div>
     <ul class="nav-links">
-      <li><a href="#page1">Home</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#page2">Projects</a></li>
-      <li><a href="#contact">Contact</a></li>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html">About</a></li>
+      <li><a href="index.html">Projects</a></li>
+      <li><a href="index.html">Contact</a></li>
     </ul>
   </nav>
 
@@ -262,11 +300,11 @@ html, body {
     <div class = "Title-Container Title-Container--Desc">Here is a collection of my pixel shader art ported from <span><a href = "https://www.shadertoy.com/user/Plento" style = "text-decoration: none;">shadertoy</a></span> to a custom built WebGL shader viewer.</div>
 
 
-    
+
 
     <div class = "Cards-Container">
 
-        <div class="card" id = "CircleDay" data-path = "Shaders/CircleDay.txt" data-name = "Circle a Day" data-description = "Circles and a loop. Made shader of the week!">
+        <div class="card" id = "CircleDay" data-path = "Shaders/CircleDay.txt" data-path2 = "" data-pass = "1" data-name = "Circle a Day" data-description = "Circles and a loop. Made shader of the week!">
             <div class="card-image">
                 <img src="Images/shader_circle.jpg" alt="Circle a Day">
             </div>
@@ -279,9 +317,9 @@ html, body {
             </div>
         </div>
 
-        <div class="card" id = "FractalDoodle" data-path = "Shaders/FractalDoodle.txt" data-name = "Fractal Pattern Doodle" data-description = "Tree like fractal in repeating space">
+        <div class="card" id = "FractalDoodle" data-path = "Shaders/FractalDoodle.txt" data-path2 = "" data-pass = "1" data-name = "Fractal Pattern Doodle" data-description = "Tree like fractal in repeating space">
             <div class="card-image">
-                <img src="Images/Card_Shaders.png" alt="Fractal Pattern Doodle">
+                <img src="Images/Card_Shaders.jpg" alt="Fractal Pattern Doodle">
             </div>
 
             <div class="card-body">
@@ -292,7 +330,7 @@ html, body {
             </div>
         </div>
 
-        <div class="card" id = "Coaster" data-path = "Shaders/coaster2d.txt" data-name = "Roller Coaster 2D" data-description = "Cute little roller coaster made from 2d SDF's">
+        <div class="card" id = "Coaster" data-path = "Shaders/coaster2d.txt" data-path2 = "" data-pass = "1" data-name = "Roller Coaster 2D" data-description = "Cute little roller coaster made from 2d SDF's">
             <div class="card-image">
                 <img src="Images/shader_coaster.jpg" alt="Roller Coaster 2D">
             </div>
@@ -305,7 +343,7 @@ html, body {
             </div>
         </div>
 
-        <div class="card" id = "Bridges" data-path = "Shaders/WeavingBridges.txt" data-name = "Weaving Bridges" data-description = "Infinite traffic!">
+        <div class="card" id = "Bridges" data-path = "Shaders/WeavingBridges.txt" data-path2 = "" data-pass = "1" data-name = "Weaving Bridges" data-description = "Infinite traffic!">
             <div class="card-image">
                 <img src="Images/shader_bridges.jpg" alt="Weaving Bridges">
             </div>
@@ -318,7 +356,7 @@ html, body {
             </div>
         </div>
 
-        <div class="card" id = "Jelly" data-path = "Shaders/jellybox.txt" data-name = "Jelly Box" data-description = "Some basic raymarching with transparency">
+        <div class="card" id = "Jelly" data-path = "Shaders/jellybox.txt" data-path2 = "" data-pass = "1" data-name = "Jelly Box" data-description = "Some basic raymarching with transparency">
             <div class="card-image">
                 <img src="Images/shader_jelly.jpg" alt="Jelly Box">
             </div>
@@ -331,7 +369,7 @@ html, body {
             </div>
         </div>
 
-        <div class="card" id = "Jungle" data-path = "Shaders/jungle.txt" data-name = "Coaster Jungle" data-description = "Raymarched SDF rollercoaster scene">
+        <div class="card" id = "Jungle" data-path = "Shaders/jungle.txt" data-path2 = "" data-pass = "1" data-name = "Coaster Jungle" data-description = "Raymarched SDF rollercoaster scene">
             <div class="card-image">
                 <img src="Images/shader_jungle.jpg" alt="Coaster Jungle">
             </div>
@@ -343,6 +381,21 @@ html, body {
                 </p>
             </div>
         </div>
+
+        <div class="card" id = "Blobby" data-path = "Shaders/blobbymass_image.txt" data-path2 = "Shaders/blobbymass_A.txt" data-pass = '2' data-name = "Blobby Mass" data-description = "Multi pass particles that want to clump together">
+            <div class="card-image">
+                <img src="Images/shader_blob.jpg" alt="Blobby Mass">
+            </div>
+
+            <div class="card-body">
+                <h3 class="card-title">Blobby Mass</h3>
+                <p class="card-text">
+                Multi pass particles that want to clump together
+                </p>
+            </div>
+        </div>
+
+        
 
 
     </div>

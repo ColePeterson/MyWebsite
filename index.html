@@ -37,7 +37,7 @@ span{
 
 /* First page */
 .Page--first{
-    background-image: url("Images/TestBackground.png");
+    background-image: url("Images/Background.jpg");
     background-size: cover;        /* scale image to always cover */
     background-position: center;   /* center the image */
     background-repeat: no-repeat;  /* no tiling */
@@ -510,9 +510,9 @@ span{
     <div class="logo">Cole Peterson</div>
     <ul class="nav-links">
       <li><a href="#page1">Home</a></li>
-      <li><a href="#about">About</a></li>
+      <li><a href="#page4">About</a></li>
       <li><a href="#page2">Projects</a></li>
-      <li><a href="#contact">Contact</a></li>
+      <li><a href="#page5">Contact</a></li>
     </ul>
   </nav>
 
@@ -543,7 +543,7 @@ span{
         <a href = "ShaderGallery.html">
             <div class="card">
                 <div class="card-image">
-                    <img src="Images/Card_Shaders.png" alt="Shader Viewer">
+                    <img src="Images/Card_Shaders.jpg" alt="Shader Viewer">
                 </div>
 
                 <div class="card-body">
@@ -555,10 +555,10 @@ span{
             </div>
         </a>
 
-        <a href = "Soundlab/soundlab.html">
+        <a href = "Soundlab/Soundlab.html">
             <div class="card">
                 <div class="card-image">
-                    <img src="Images/Card_Audio.png" alt="Audio Synthesis">
+                    <img src="Images/Card_Audio.jpg" alt="Audio Synthesis">
                 </div>
 
                 <div class="card-body">
@@ -573,7 +573,7 @@ span{
         <a href = "https://github.com/ColePeterson/ColeEngine" target="_blank" rel="noopener">
             <div class="card">
                 <div class="card-image">
-                    <img src="Images/Card_Engine.png" alt="Custom Engine">
+                    <img src="Images/Card_Engine.jpg" alt="Custom Engine">
                 </div>
 
                 <div class="card-body">
@@ -588,7 +588,7 @@ span{
 
         <div class="card">
             <div class="card-image">
-                <img src="Images/Card_Nightwalker_2.png" alt="Raycasting engine">
+                <img src="Images/Card_Nightwalker.jpg" alt="Raycasting engine">
             </div>
 
             <div class="card-body">
@@ -601,7 +601,7 @@ span{
 
         <div class="card">
             <div class="card-image">
-                <img src="Images/Card_Vizzr.png" alt="Music Visualizer">
+                <img src="Images/Card_Vizzr.jpg" alt="Music Visualizer">
             </div>
 
             <div class="card-body">
@@ -614,7 +614,7 @@ span{
 
         <div class="card">
             <div class="card-image">
-                <img src="Images/Card_Website.png" alt="This Website">
+                <img src="Images/Card_Website.jpg" alt="This Website">
             </div>
 
             <div class="card-body">
@@ -720,17 +720,17 @@ span{
     </a>
 
     <div class = "SocialsContainer">
-        <a href = "https://www.linkedin.com/in/cole-peterson-709a27269/">
+        <a href = "https://www.linkedin.com/in/cole-peterson-709a27269/" target="_blank" rel="noopener">
             <div class = "Socials">
                 <img src="Images/Icon_LinkedIn.png" alt="LinkedIn">
             </div>
         </a>
-        <a href = "https://www.shadertoy.com/user/Plento">
+        <a href = "https://www.shadertoy.com/user/Plento" target="_blank" rel="noopener">
             <div class = "Socials">
                 <img src="Images/Icon_Shadertoy.png" alt="Shadertoy">
             </div>
         </a>
-        <a href = "https://github.com/ColePeterson">
+        <a href = "https://github.com/ColePeterson" target="_blank" rel="noopener">
             <div class = "Socials">
                 <img src="Images/Icon_Github.png" alt="Github">
             </div>
@@ -755,5 +755,12 @@ span{
 
 
 </body>
+
+<script>
+  if (window.location.hash) {
+    history.replaceState(null, null, window.location.pathname);
+  }
+</script>
+
 
 </html>

@@ -1,0 +1,107 @@
+precision highp float;
+uniform vec2 resolution;
+uniform float time;
+uniform vec3 mouse;
+uniform float frame;
+
+uniform sampler2D channel0;
+uniform sampler2D channel1;
+
+
+#define R resolution.xy
+#define m vec2(R.x/R.y*(mouse.x/R.x-.5),mouse.y/R.y-.5)
+#define ss(a, b, t) smoothstep(a, b, t)
+#define ch(chan, p) texture2D(chan, p.xy / R.xy)
+
+// Number of particles
+const int nParticles = 200;
+
+// Sim speed
+float dt = .3;
+
+// Radial force (force pushing inward)
+const float bForce = 320.;
+
+// Mouse force
+const float mForce = 900.0;
+
+// Max velocity
+const vec2 maxVel = vec2(9.);
+
+// Particle friction
+const float friction = .0095;
+
+
+
+vec2 hash22(vec2 p){
+	vec3 p3 = fract(vec3(p.xyx) * vec3(.1031, .1030, .0973));
+    p3 += dot(p3, p3.yzx+33.33);
+    return fract((p3.xx+p3.yz)*p3.zy);
+}
+
+float smoothmin( float d1, float d2, float k ) {
+    float h = clamp( 0.5 + 0.5*(d2-d1)/k, 0.0, 1.0 );
+    return mix( d2, d1, h ) - k*h*(1.0-h); 
+}
+
+// Apply force toward center of screen
+vec2 radialForce(vec2 pos){
+    vec2 v = R.xy*.5 - pos;
+    float d = (R.y*.5) - max(length(v), 4.);
+    return normalize(v)*(60. / (d*d));
+}
+
+void main(){
+    vec2 u = gl_FragCoord.xy;
+    ivec2 iu = ivec2(u);
+    
+    // Only do this pixel if its for a particle
+    if(iu.x < nParticles || iu.y == 0){
+        // The particle info in this pixel
+        vec4 bA = ch(channel0, u);
+    
+        // Loop through all particles
+        for(int i = 0; i < nParticles; i++){
+            // Not looking at self
+            if( i != iu.x){
+                // Calculate repulsive force from each particle
+                vec2 p = ch(channel0, vec2(i,0.)).xy;
+                vec2 v = bA.xy - p;
+     			float d = max(length(v), 10.0);	   
+                
+                // Apply repulsive force
+                bA.zw += (150.0 / (d*d))*normalize(v)*dt;
+            }
+    	}
+        
+        // Mouse
+        if(mouse.z > 0.){
+            vec2 v = bA.xy - mouse.xy;
+         	float r = mForce / max(length(v), .001);
+            vec2 n = normalize(v);
+            bA.zw += r*n*dt;
+        }
+        
+        // Apply force from the edges of the bounds
+        bA.zw += dt*bForce*radialForce(bA.xy);
+        
+        // Update position and velocity
+        bA.xy += bA.zw*dt;
+        bA.zw -= friction*bA.zw*dt;
+        // Limit max velocity
+        bA.zw = clamp(bA.zw, -maxVel, maxVel);
+        
+        // Init
+    	if(frame < 5.){
+            bA.xy = hash22(u)*R.xy * 0.5 + R.xy*0.25;
+            bA.zw = vec2(0);
+    	}
+        
+        gl_FragColor = bA;
+    }
+    else return;
+   
+    
+    
+    
+}

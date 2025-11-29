@@ -1,0 +1,113 @@
+precision highp float;
+uniform vec2 resolution;
+uniform float time;
+uniform vec3 mouse;
+uniform float frame;
+
+uniform sampler2D channel0;
+uniform sampler2D channel1;
+
+
+#define R resolution.xy
+#define m vec2(R.x/R.y*(mouse.x/R.x-.5),mouse.y/R.y-.5)
+#define ss(a, b, t) smoothstep(a, b, t)
+#define A(p) texture2D(channel0, p.xy / R.xy)
+
+const int nParticles = 280; // Number of boids
+
+float dt = 0.8; // Simulation speed
+
+// Sim values
+const float radius = 33.; // Boid sight radius
+const float minSep = 33.; // Boid minimum seperation
+const float speed = 2.2; // Boid movement speed 
+
+// Render values
+const float rad = 0.0075;
+const float trail = 0.8;
+
+const float obRad = 50.; // Obstacle radius
+
+
+vec2 hash22(vec2 p){
+	vec3 p3 = fract(vec3(p.xyx) * vec3(.1031, .1030, .0973));
+    p3 += dot(p3, p3.yzx+33.33);
+    return fract((p3.xx+p3.yz)*p3.zy);
+}
+
+
+// Buffer A: Simple particle tracking + flocking algorithm
+
+
+void main(){
+    vec2 u = gl_FragCoord.xy;
+
+    // Only deal with the pixels representing our boids
+    if(int(u.x) < nParticles && int(u.y) == 0){
+        vec4 bA = A(u); // .xy = position | .zw = velocity ie. the current Boid
+        
+        bA.xy += bA.zw*dt; // Update position
+
+        vec2 avgDir = vec2(0., 0.); // Average direction of all boids in the sight radius
+        vec2 avgPos = vec2(0., 0.); // Average position of all boids in the sight radius
+        
+        float nb = 0.; // Number of boids in sight of current boid
+        
+        // Go through all particles
+        for(int i = 0; i < nParticles; i++){
+            vec4 p = A(vec2(i, 0.)); // Boid position and velocity ie "this" Boid
+            float d = length(bA.xy - p.xy); // Distance from this Boid to current Boid
+            
+            // This boid is in sight
+            if(d <= radius){
+                avgDir += p.zw;
+                avgPos += p.xy;
+                nb++;
+            }
+            
+            // This boid is too close, push away
+            if(d <= minSep){
+                vec2 dir = normalize(p.xy - bA.xy);
+                bA.xy -= dir * minSep*.008;
+            }
+        }
+        
+        // At least 1 boid in sight
+        if(nb > 0.){
+            avgPos /= nb;
+            bA.zw = normalize(avgDir) * speed; // Set new velocity based on avg direction
+            
+            vec2 dir = normalize(avgPos - bA.xy); // Move boid in direction of avg position of boids in sight
+            bA.zw += dir * 0.1;
+        }
+        
+        // Add some randomness to their direction
+        bA.z += .22*cos(time + u.x*555.);
+        bA.w += .22*sin(time*1.3 + u.x*355.);
+        
+        // Mouse click = randomize boid position
+        if(mouse.z > 0.){
+           vec2 v = normalize(mouse.xy - bA.xy);
+           float d = length(mouse.xy - bA.xy) - obRad*.9;
+           
+           float dd = smoothstep(0., radius*3., d);            
+           bA.zw += mix(1.*normalize(-vec2(v.x, v.y)), vec2(0), dd);
+        }
+        
+
+        // Repeat coordinates
+        bA.xy = mod(bA.xy, R.xy);
+        
+
+        // Init boid position
+        if(frame < 4.){
+            bA.xy = hash22(u*999. + 522.2)*R.xy * 0.7 + R.xy*0.15;
+            bA.zw = (2.*hash22(u*999. + 322.2) - 1.) * .4;
+        }
+        
+        gl_FragColor = bA;
+    }
+    else
+        return;
+    
+}
