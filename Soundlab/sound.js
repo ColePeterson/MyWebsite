@@ -12,9 +12,10 @@ var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 var bLength = audioCtx.sampleRate * bufferSeconds;
 
 // The two audio buffers, A and B
-var bufferA = audioCtx.createBuffer(2, bLength, audioCtx.sampleRate);
-var bufferB = audioCtx.createBuffer(2, bLength, audioCtx.sampleRate);
+//var bufferA = audioCtx.createBuffer(2, bLength, audioCtx.sampleRate);
+//var bufferB = audioCtx.createBuffer(2, bLength, audioCtx.sampleRate);
 
+var buffers = [audioCtx.createBuffer(2, bLength, audioCtx.sampleRate), audioCtx.createBuffer(2, bLength, audioCtx.sampleRate)];
 
 var startA = 0;
 var startB = 0;
@@ -32,7 +33,8 @@ var pause = true;
 
 // Updates the time value for nodes that need it
 function updateTimeNodes(t){
-    for (var i = 0; i < timeNodes.length; i++) {
+    for (var i = 0; i < timeNodes.length; i++) 
+    {
         timeNodes[i].inputs[0].value = t;
         timeNodes[i].outputs[0].value = t;
     }
@@ -40,7 +42,8 @@ function updateTimeNodes(t){
 
 
 function getCurrentTime(){
-    for (var i = 0; i < timeNodes.length; i++) {
+    for (var i = 0; i < timeNodes.length; i++) 
+    {
         return timeNodes[i].outputs[0].value;
     }
 }
@@ -70,9 +73,11 @@ function updateGraphNodes(i, timeOffset){
 */
 
 
-function updateGraphNodes(i, timeOffset, t, ct){
+function updateGraphNodes(i, timeOffset, t, ct)
+{
 
-    for (var j = 0; j < graphNodes.length; j++) {
+    for (var j = 0; j < graphNodes.length; j++) 
+    {
 
         //updateTimeNodes(t + graphNodes[j].graphCounter);
 
@@ -95,8 +100,10 @@ function updateGraphNodes(i, timeOffset, t, ct){
 }
 
 
-function clearAllGraphNodes(){
-    for (var j = 0; j < graphNodes.length; j++) {
+function clearAllGraphNodes()
+{
+    for (var j = 0; j < graphNodes.length; j++) 
+    {
         clearCanvas(graphNodes[j].canvas);
         drawLines({cnvs: graphNodes[j].canvas, scale: graphNodes[j].canvasScale});
         graphNodes[j].graphCounter = 0;
@@ -104,34 +111,38 @@ function clearAllGraphNodes(){
     evaluateGraph();
 }
 
-function updateAllGraphCounters(){
-    for (var j = 0; j < graphNodes.length; j++) {
+function updateAllGraphCounters()
+{
+    for (var j = 0; j < graphNodes.length; j++) 
+    {
         graphNodes[j].graphCounter++;
     }
 }
 
-function testGraphics(){
+function testGraphics()
+{
     //clearAllGraphNodes();
 
     evaluateAllNodes();
     //evaluateGraph();
     load(bufferA);
     updateAllGraphCounters();
-    counter++;
+    globalTime++;
 
 }
 
 
-function evaluateGraph(){
+function evaluateGraph()
+{
     for (var k = 0; k < 8; k++) {
-        for (var i = 0; i < bufferB.length; i++) {
+        for (var i = 0; i < buffers[0].length; i++) {
             let t = (i*bufferSeconds) / bLength;
-            updateTimeNodes(t + counter);
+            updateTimeNodes(t + globalTime);
             evaluateAllNodes();
             updateGraphNodes(i, t, getCurrentTime());
         }
         updateAllGraphCounters();
-        counter++;
+        globalTime++;
     }
 }
 
@@ -141,24 +152,21 @@ function currTime()
     return d.getTime();
 }
 
-var deltaTime = 0.0;
-
 // Load the next chunk of audio into the specified buffer
-function load(buffer, startTime){
+function load(buffer, startTime)
+{
     let t;
 
     var offset = document.getElementById("test").value;
 
     // Channel 0 (left)
     var cBuffer = buffer.getChannelData(0);
-    for (var i = 0.0; i < bufferB.length; i++) {
-        t = (i*bufferSeconds) / bLength;
+    for (var i = 0.0; i < buffers[0].length; i++) 
+    {
+        t = globalTime + i / audioCtx.sampleRate;
 
-        updateTimeNodes(t + counter);
+        updateTimeNodes(t + globalTime);
         evaluateAllNodes();
-
-        //if(buffer == bufferA)
-            //updateGraphNodes(i, counter);
 
         cBuffer[i] = outputNode.inputs[0].value.x;
 
@@ -171,10 +179,11 @@ function load(buffer, startTime){
     
     // Channel 1 (right)
     cBuffer = buffer.getChannelData(1);
-    for (var i = 0.0; i < bufferB.length; i++) {
-        t = (i*bufferSeconds) / bLength;
-        
-        updateTimeNodes(t + counter);
+    for (var i = 0.0; i < buffers[0].length; i++) 
+    {
+        t = globalTime + i / audioCtx.sampleRate;
+
+        updateTimeNodes(t + globalTime);
         evaluateAllNodes();
         
         cBuffer[i] = outputNode.inputs[0].value.y;
@@ -185,107 +194,74 @@ function load(buffer, startTime){
             break;
         }
     }
-
-    deltaTime = audioCtx.currentTime - startTime;
 }
 
-/*
-The functions runA() and runB() are infinitely recursive as long as the user doesn't press pause.
-This is where the buffer alternating, or ping ponging happens.
-*/
+var globalTime = 0.0; // Keeps track of the total time
+let nextStartTime = 0;
+let bufferIndex = 0;
+
+function scheduleNextChunk() 
+{
+    const buffer = buffers[bufferIndex];
+
+    load(buffer, audioCtx.currentTime);
+
+    globalTime += bufferSeconds;
 
 
-var counter = 0.0; // Keeps track of the total time
-let playHead = audioCtx.currentTime;  // how far into the future we've scheduled audio
-const CHUNK_DURATION = 1.0;      // seconds (your 1-second buffer)
-
-// Play the audio in buffer B
-function runB(nextTime){
-    var source = audioCtx.createBufferSource();
-    source.buffer = bufferB;
-    source.connect(audioCtx.destination);
-    source.start(nextTime); // Start B
-
-    counter += bufferSeconds; // Increase total time by length of buffer in seconds
-    load(bufferA, 0); // Load the next chunk of audio into buffer A
-
-    // Once B is finished playing, run A
-    /*
-    source.onended = function(){
-        runA();
+    // Ensure nextStartTime is always slightly in the future
+    const now = audioCtx.currentTime;
+    if (nextStartTime < now + 0.05) 
+    {
+        nextStartTime = now + 0.05;
     }
-    */
-    console.log("runB: " + counter);
+
+    // Create a fresh source node for this playback
+    const src = audioCtx.createBufferSource();
+    src.buffer = buffer;
+    src.connect(audioCtx.destination);
+
+    // This is the critical part: start at an exact time
+    src.start(nextStartTime);
+
+    // Update nextStartTime for the following chunk
+    nextStartTime += bufferSeconds;
+
+    bufferIndex = 1 - bufferIndex;
+
 }
 
-function runA(nextTime){
-    var source = audioCtx.createBufferSource();
-    source.buffer = bufferA;
-    source.connect(audioCtx.destination);
-    source.start(nextTime); // Start A
-    startA = audioCtx.currentTime;
-    
-    counter += bufferSeconds; // Increase total time by length of buffer in seconds
-    load(bufferB, 0); // Load the next chunk of audio into buffer B
-    
+// Keep the queue “topped up” so there’s always some audio scheduled
+function keepQueueFull() 
+{
+    const lookAhead = 2.0; // seconds of audio we want queued in advance
+    const now = audioCtx.currentTime;
 
-    // Once A is finished playing, run B
-    /*
-    source.onended = function(){
-        runB();
+    while (nextStartTime < now + lookAhead) 
+    {
+        scheduleNextChunk();
     }
-    */
-    console.log("runA: " + counter);
-}
 
-
-let player = null;
-var isA = true;
-
-// Start the recursion
-function startAudio(){
-    pause = false;
-    evaluateGraph();
-    
-    load(bufferA, audioCtx.currentTime);
-
-    producerTimer = setInterval(() => {
-        const now = audioCtx.currentTime;
-        const startTime = Math.max(now, playHead);
-
-        if(isA)
-        {
-            runA(startTime);
-            load(bufferB, 0);
-            isA = false;
-        }
-        else
-        {
-            runB(startTime);
-            load(bufferA, 0);
-            isA = true;
-        }
-
-    }, 1000);
-
-
-
-    //load(bufferA, currTime()); // Buffer A will load first
-    //startTimer();
-    //runA();
-    
+    // Call again from the main thread occasionally (timing here isn't critical)
+    setTimeout(keepQueueFull, 100);
 }
 
 
 
-
-
+// Start from a user gesture
+document.getElementById("StartButton").addEventListener("click", async () => {
+    if (audioCtx.state === "suspended") {
+        await audioCtx.resume();
+    }
+    nextStartTime = audioCtx.currentTime; // start at "now"
+    keepQueueFull();
+});
 
 
 
 function stopAudio(){
     pause = true;
-    counter = 0;
+    globalTime = 0;
     stopTimer();
 }
 
