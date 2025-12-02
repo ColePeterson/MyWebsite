@@ -235,17 +235,14 @@ Node.prototype.initNodeUi = function(){
     
     //this.updatePosition();
     this.nodeParentEl.style.position = 'absolute';
-
-    // Add node div to page
-
-    let wrapper = document.getElementById("GraphWrapper");
-    wrapper.appendChild(this.nodeParentEl);
+    document.body.appendChild(this.nodeParentEl);
 };
 
 
-
+/*
 
 const SVG = document.getElementById("svg");
+const viewport = document.getElementById("viewport");
 const wrapper = document.getElementById("GraphWrapper");
 
 let scale = 1;
@@ -254,6 +251,7 @@ let offsetY = 0;
 
 function applyTransform() 
 {
+    console.log("DDDDD");
     wrapper.style.transformOrigin = "0 0";
     wrapper.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
 }
@@ -286,7 +284,7 @@ SVG.addEventListener("wheel", function (e)
     applyTransform();
 }, { passive: false });
 
-
+*/
 
 
 

@@ -478,7 +478,10 @@ document.body.onmousedown = function (e) {
     }
 }
 
-
+function clearAllGraphNodes(){
+    nodes = [];
+    console.log("S");
+}
 
 // Create initial graph layout
 $(document).ready(function() {
