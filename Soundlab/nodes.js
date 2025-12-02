@@ -231,15 +231,60 @@ Node.prototype.initNodeUi = function(){
         
     });
     
+    
+    
     //this.updatePosition();
     this.nodeParentEl.style.position = 'absolute';
-    document.body.appendChild(this.nodeParentEl);
+
+    // Add node div to page
+
+    let wrapper = document.getElementById("GraphWrapper");
+    wrapper.appendChild(this.nodeParentEl);
 };
 
 
 
 
+const SVG = document.getElementById("svg");
+const wrapper = document.getElementById("GraphWrapper");
 
+let scale = 1;
+let offsetX = 0;
+let offsetY = 0;
+
+function applyTransform() 
+{
+    wrapper.style.transformOrigin = "0 0";
+    wrapper.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+}
+
+applyTransform();
+
+SVG.addEventListener("wheel", function (e) 
+{
+    
+    e.preventDefault();
+
+    const zoomFactor = 1.1;
+    const oldScale = scale;
+
+    if (e.deltaY < 0) scale *= zoomFactor;
+    else scale /= zoomFactor;
+
+    scale = Math.max(0.2, Math.min(4, scale));
+
+    const rect = SVG.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const worldX = (mouseX - offsetX) / oldScale;
+    const worldY = (mouseY - offsetY) / oldScale;
+
+    offsetX = mouseX - worldX * scale;
+    offsetY = mouseY - worldY * scale;
+
+    applyTransform();
+}, { passive: false });
 
 
 

@@ -6,10 +6,10 @@
 
 */
 
-const bufferSeconds = 1.0;
+const CHUNK_DURATION = 1.0;
 
 var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-var bLength = audioCtx.sampleRate * bufferSeconds;
+var bLength = audioCtx.sampleRate * CHUNK_DURATION;
 
 // The two audio buffers, A and B
 //var bufferA = audioCtx.createBuffer(2, bLength, audioCtx.sampleRate);
@@ -27,7 +27,7 @@ document.getElementById("cTime").innerHTML = "Time: " + 0.0;
 
 
 
-var pause = true;
+var isPlaying = true;
 
  
 
@@ -136,7 +136,7 @@ function evaluateGraph()
 {
     for (var k = 0; k < 8; k++) {
         for (var i = 0; i < buffers[0].length; i++) {
-            let t = (i*bufferSeconds) / bLength;
+            let t = (i*CHUNK_DURATION) / bLength;
             updateTimeNodes(t + globalTime);
             evaluateAllNodes();
             updateGraphNodes(i, t, getCurrentTime());
@@ -156,8 +156,6 @@ function currTime()
 function load(buffer, startTime)
 {
     let t;
-
-    var offset = document.getElementById("test").value;
 
     // Channel 0 (left)
     var cBuffer = buffer.getChannelData(0);
@@ -199,6 +197,7 @@ function load(buffer, startTime)
 var globalTime = 0.0; // Keeps track of the total time
 let nextStartTime = 0;
 let bufferIndex = 0;
+let scheduledSources = [];
 
 function scheduleNextChunk() 
 {
@@ -206,7 +205,7 @@ function scheduleNextChunk()
 
     load(buffer, audioCtx.currentTime);
 
-    globalTime += bufferSeconds;
+    globalTime += CHUNK_DURATION;
 
 
     // Ensure nextStartTime is always slightly in the future
@@ -224,8 +223,10 @@ function scheduleNextChunk()
     // This is the critical part: start at an exact time
     src.start(nextStartTime);
 
+    scheduledSources.push(src);
+
     // Update nextStartTime for the following chunk
-    nextStartTime += bufferSeconds;
+    nextStartTime += CHUNK_DURATION;
 
     bufferIndex = 1 - bufferIndex;
 
@@ -234,6 +235,8 @@ function scheduleNextChunk()
 // Keep the queue “topped up” so there’s always some audio scheduled
 function keepQueueFull() 
 {
+    if(!isPlaying) return;
+
     const lookAhead = 2.0; // seconds of audio we want queued in advance
     const now = audioCtx.currentTime;
 
@@ -248,21 +251,32 @@ function keepQueueFull()
 
 
 
-// Start from a user gesture
+// Start playback from button
 document.getElementById("StartButton").addEventListener("click", async () => {
     if (audioCtx.state === "suspended") {
         await audioCtx.resume();
     }
     nextStartTime = audioCtx.currentTime; // start at "now"
+    isPlaying = true;
     keepQueueFull();
 });
 
 
 
 function stopAudio(){
-    pause = true;
-    globalTime = 0;
-    stopTimer();
+    isPlaying = false;
+
+    // Stop all scheduled sources
+    scheduledSources.forEach(src => {
+        try { src.stop(); } catch {}
+    });
+
+    scheduledSources.length = 0; // clear array
+
+    // Reset timeline (optional)
+    nextStartTime = audioCtx.currentTime;
+    globalTimeSec = 0;
+    
 }
 
 
