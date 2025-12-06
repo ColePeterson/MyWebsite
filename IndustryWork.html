@@ -367,6 +367,11 @@ html, body {
   object-fit: contain;  /* preserves aspect ratio for both square + landscape */
 }
 
+.achievement-modal__image-wrapper img:hover {
+  cursor: pointer;
+  transform: scale(0.97);
+}
+
 .achievement-modal__image-caption {
   font-size: 0.85rem;
   opacity: 0.8;
@@ -388,6 +393,7 @@ html, body {
   font-size: 0.85rem;
   cursor: pointer;
   color:#19c9ff;
+  font-weight: 600;
 }
 
 .image-nav-btn:hover {
@@ -472,10 +478,10 @@ html, body {
   </div>
 
   <div class="achievement-grid">
-    <!-- Example card 1 -->
+    
     <article class="achievement-card" data-achievement-id="asmr-planet">
       <div class="achievement-thumb">
-        <img src="Images/work_planet_01.jpg" alt="Hex-tile planet tool">
+        <img src="Images/work_planet_01.jpg" alt="Bubble Planet">
       </div>
       <div class="achievement-body">
         <h2 class="achievement-title">Bubble World Shaders</h2>
@@ -490,17 +496,16 @@ html, body {
       </div>
     </article>
 
-    <!-- Example card 2 -->
+    
     <article class="achievement-card" data-achievement-id="water-shaders">
       <div class="achievement-thumb">
-        <img src="images/work_grass_02.jpg" alt="Water and shore foam shaders">
+        <img src="images/work_grass_02.jpg" alt="Grass">
       </div>
       <div class="achievement-body">
-        <h2 class="achievement-title">Shoreline Foam & Water Shading</h2>
+        <h2 class="achievement-title">Interactable & Procedural grass</h2>
         <p class="achievement-meta">Rendering & Materials</p>
         <p class="achievement-summary">
-          Implemented distance-field-driven shoreline foam and single-layer
-          water materials for console targets.
+          Implemented interactable grass using PCG to spawn.
         </p>
         <button class="achievement-more-btn" type="button">
           View Details
@@ -508,9 +513,63 @@ html, body {
       </div>
     </article>
 
-    
+
+    <article class="achievement-card" data-achievement-id="asmr-material">
+      <div class="achievement-thumb">
+        <img src="images/work_asmr_05.jpg" alt="Master Material">
+      </div>
+      <div class="achievement-body">
+        <h2 class="achievement-title">Master Material Layering System</h2>
+        <p class="achievement-meta">Materials / Technical Art</p>
+        <p class="achievement-summary">
+          Implemented a versatile master material used for the vast majority of assets.
+        </p>
+        <button class="achievement-more-btn" type="button">
+          View Details
+        </button>
+      </div>
+    </article>
+
+    <article class="achievement-card" data-achievement-id="character">
+      <div class="achievement-thumb">
+        <img src="images/work_char_02.jpg" alt="Customizable Character">
+      </div>
+      <div class="achievement-body">
+        <h2 class="achievement-title">Runtime Customizable Character</h2>
+        <p class="achievement-meta">Materials / Technical Art</p>
+        <p class="achievement-summary">
+          Implemented a customizable character system using the Mutable plugin.
+        </p>
+        <button class="achievement-more-btn" type="button">
+          View Details
+        </button>
+      </div>
+    </article>
+
+    <article class="achievement-card" data-achievement-id="weapon">
+      <div class="achievement-thumb">
+        <img src="images/work_gun_02.jpg" alt="Weapon VFX">
+      </div>
+      <div class="achievement-body">
+        <h2 class="achievement-title">Weapon VFX</h2>
+        <p class="achievement-meta">Technical Art / Niagara Particles</p>
+        <p class="achievement-summary">
+          Implemented a system for tracking bullet trails, impacts and scopes.
+        </p>
+        <button class="achievement-more-btn" type="button">
+          View Details
+        </button>
+      </div>
+    </article>
+
+
   </div>
 </section>
+
+
+
+
+
 
 <!-- Modal (shared for all achievements) -->
 <div class="achievement-modal" id="achievement-modal" aria-hidden="true">
@@ -561,9 +620,10 @@ html, body {
 <script>
   
   const ACHIEVEMENTS = {
+    // Bubble Planet
     "asmr-planet": {
       title: "Bubble World Shaders",
-      role: "Technical Artist / Materials",
+      role: "Technical Art / Materials",
       meta: "Unreal Engine 5 · Material Editor · Shaders",
       overview:
         "Created the materials and enviromental effects that would bring the original artistic concepts of 'bubble planets' to life. The bubble is filled with water and waves should crash against the sides.",
@@ -574,7 +634,7 @@ html, body {
         "Utilizes 'Ultra Dynamic Sky' volumetric clouds with a custom mask around planet locations."
       ],
       tools:
-        "Unreal Engine 5, C++, Blueprints, PCG, Geometry Script, Niagara, Material Editor, Perforce, Photoshop/Blender for asset prep.",
+        "Unreal Engine 5, C++, Blueprints, PCG, Material Editor, Blender for asset prep.",
       images: [
         {
           src: "Images/work_planet_01.jpg",
@@ -594,35 +654,152 @@ html, body {
       ]
     },
 
+    // Grass
     "water-shaders": {
-      title: "Shoreline Foam & Water Shading",
-      role: "Rendering / Materials",
-      meta: "Water · Distance Fields · Performance",
+      title: "Interactable/Procedural Grass",
+      role: "Technical Art / Materials",
+      meta: "Grass · Material Editor · PCG",
       overview:
-        "Implemented water rendering focused on believable shoreline foam using distance fields, tuned for real-time performance on target hardware.",
+        "Implemented interactable and animated grass that is spawned using PCG.",
       techHighlights: [
-        "Used DistanceToNearestSurface with global distance fields to drive shoreline foam masks.",
-        "Integrated with single-layer water shading, including depth-based color absorption and refraction.",
-        "Exposed artist-friendly controls for foam falloff, noise detail, and view-distance behavior.",
-        "Profiled and adjusted distance-field view distance and clipmap settings to balance quality vs. cost."
+        "Uses render targets to track the players location and velocity so the material can deform the grass correctly. RVT is used to track grass height relative to player",
+        "Grass model created in Blender using geometry nodes.",
+        "Exposed artist friendly controls for many parameters to dial in the exact look.",
+        "Used PCG to procedurally scatter grass using landscape layers and other varying rules."
       ],
       tools:
-        "Unreal Engine 5, Material Editor, Single Layer Water, Distance Fields, RenderDoc for validation, in-engine profiling tools.",
+        "Unreal Engine 5, Material Editor, Runtime Virtual Texture.",
       images: [
         {
           src: "Images/work_grass_02.jpg",
-          alt: "Shoreline foam close-up",
-          caption: "Close-up of foam driven by distance fields blending into deep water shading."
+          alt: "In engine grass.",
+          caption: "In engine grass."
         },
         {
           src: "Images/work_grass_01.jpg",
-          alt: "Wide shot of coastline water",
-          caption: "Wide shot showing stable foam patterns at distance with tuned distance-field settings."
+          alt: "In engine grass.",
+          caption: "In engine grass."
+        },
+        {
+          src: "Images/work_grass_03.jpg",
+          alt: "In engine grass.",
+          caption: "In engine grass."
+        },
+        {
+          src: "Images/work_grass_04.jpg",
+          alt: "In engine grass.",
+          caption: "In engine grass."
         }
+
+      ]
+    },
+
+    // ASMR Material
+    "asmr-material": {
+      title: "Master Material Layering System",
+      role: "Technical Art / Materials",
+      meta: "Material Editor · Custom Primitive Data",
+      overview:
+        "Implemented a versatile master material used for the vast majority of assets. Features a dirt mask, grime/wear mask, material ID mask and color paint mask, all controlled with vertex color channels respectfully. ",
+      techHighlights: [
+        "A single material instance can have up to 10 material layers. Each layer has a bottom and top material controlled by the 'wear' mask (vertex color green)",
+        "Material layer is chosen by the blue channel of the vertex color and is easily set using triangle island fills.",
+        "Red channel controls a dirt mask.",
+        "Custom primitive data is used to control the intensity of the masks on a per object basis. A special tool is used to transfer this data between primimtives and instances.",
+        "Has good nanite material clustering as only 1 or 2 materials should be visible at one time.",
+        "Very low overall texture usage as a limited number are loaded via texture array and are manipulated using the many parameters exposed to artists."
+      ],
+      tools:
+        "Unreal Engine 5, Material Editor, Vertex Colors, Custom Primitive Data, Material Layers.",
+      images: [
+        {
+          src: "Images/work_asmr_05.jpg",
+          alt: "Example of different material layers.",
+          caption: "Example of different material layers."
+        },
+        {
+          src: "Images/work_asmr_01.jpg",
+          alt: "Example of different material layers.",
+          caption: "Modular assets that all share the same one material."
+        },
+        {
+          src: "Images/work_asmr_02.jpg",
+          alt: "Example of writing different material layer information to vertex colors.",
+          caption: "Example of writing different material layer information to vertex colors."
+        },
+         {
+          src: "Images/work_asmr_06.jpg",
+          alt: "Material layer parameters.",
+          caption: "Material layer parameters."
+        },
+        {
+          src: "Images/work_asmr_04.jpg",
+          alt: "Vertex color demonstration.",
+          caption: "Vertex color demonstration."
+        }
+      ]
+    },
+
+    // Custom character
+    "character": {
+      title: "Runtime Customizable Characters",
+      role: "Technical Artist",
+      meta: "Material Editor · Custom Primitive Data",
+      overview:
+        "Implemented a customizable character system using the Mutable plugin.",
+      techHighlights: [
+        "Modular skeletal mesh assets that get combined into a single skeletal mesh",
+        "Textures are combined on the fly using pre-defined UV space grids.",
+        "All data neatly organized in a data table making customization very easy."
+      ],
+      tools:
+        "Unreal Engine 5, Material Editor, Mutable plugin, Texturing.",
+      images: [
+        {
+          src: "Images/work_char_02.jpg",
+          alt: "A custom character.",
+          caption: "A custom character."
+        },
+        {
+          src: "Images/work_char_01.jpg",
+          alt: "Mutable setup and parameters.",
+          caption: "Mutable setup and parameters."
+        }
+
+      ]
+    },
+
+    // Weapon VFX
+    "character": {
+      title: "Weapon VFX System",
+      role: "Technical Artist",
+      meta: "Niagara Particles · C++",
+      overview:
+        "Implemented a system for tracking bullet trails, impacts and scopes.",
+      techHighlights: [
+        "Bullet trails are handled by a global system that tracks bullet start and end positions for each frame.",
+        "These positions are sent to a Niagara system where the endpoints are connected and rendered.",
+        "Impacts work similarly but particles are only spawned on impact.",
+        "Weapon scope material is a basic transparent with parallax dot."
+      ],
+      tools:
+        "Unreal Engine 5, Material Editor, Mutable plugin, Texturing.",
+      images: [
+        {
+          src: "Images/work_gun_02.jpg",
+          alt: "A custom character.",
+          caption: "A custom character."
+        },
+        {
+          src: "Images/work_gun_01.jpg",
+          alt: "Mutable setup and parameters.",
+          caption: "Mutable setup and parameters."
+        }
+
       ]
     }
 
-    // Add more achievements here...
+    
   };
 
   (function () {
