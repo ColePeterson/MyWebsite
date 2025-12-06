@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+html, body {
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+
+.Page{
+    display: flex;
+    flex-direction: column;
+    width:100%;
+    min-height:100vh;
+    height:auto;
+    background-color:rgb(29, 34, 41);
+    background: linear-gradient(0deg,rgb(13, 17, 19) 0%, rgba(29, 34, 41, 1) 100%);
+    color:rgb(0, 0, 0);
+    margin-bottom: 0px;
+    scroll-snap-align: start;
+    box-sizing: border-box;
+}
+
+/* Top navigation bar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.08);   /* subtle transparent white */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 1rem 2rem;
+  z-index: 1000;
+}
+
+/* Left logo */
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+}
+
+
+/* Nav links */
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+    padding-right: 4rem;
+
+}
+
+/* Nav links clicked */
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: opacity 0.2s ease;
+  
+}
+
+/* Nav links hover */
+.nav-links a:hover {
+    opacity: 0.6;
+}
+
+/* Demo background colors */
+#home { background: #111; color: white; }
+#about { background: #333; color: white; }
+#projects { background: #555; color: white; }
+#contact { background: #777; color: white; }
+
+
+/* Container for page title */
+.Title-Container{
+    display: block;
+    text-align: center;
+    justify-content: center;
+    font-size:3rem;
+    color:#19c9ff;
+    text-shadow: 0 0 18px rgba(0, 132, 255, 0.1);
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    padding-top: 4rem;
+}
+
+/* Container for page title description */
+.Title-Container--Desc{
+    display: block;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    font-size:1rem;
+    color:#999999;
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    padding-top: 1rem;
+}
+
+
+.sub-page{
+    width: 100%;
+    margin-top: 3rem;
+}
+
+.image-container{
+    display: flex;
+    justify-content: center;
+    width:100%;
+}
+.image-container-small{
+    display: flex;
+    width:fit-content;
+    max-width: 35rem;
+    flex-wrap: wrap;
+}
+
+.thumb img{
+    width: 28rem;
+    height: 28rem;
+    margin: 0.2rem;
+    margin-top: 0.1rem;
+    flex-wrap: wrap;
+}
+
+.thumb img:hover{
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.page--industry {
+  min-height: 100vh;
+  padding: 80px 6vw 60px;
+  background: #05060a;
+  color: #f2f4ff;
+  box-sizing: border-box;
+}
+
+.industry-header {
+  max-width: 900px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.industry-header h1 {
+  font-size: 2.5rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.industry-header p {
+  font-size: 1rem;
+  opacity: 0.85;
+}
+
+/* --- Achievement Cards --- */
+
+.achievement-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+}
+
+.achievement-card {
+  width: min(360px, 100%);
+  background: radial-gradient(circle at top, #181b24, #05060a);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.achievement-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
+  border-color: rgba(88, 179, 255, 0.6);
+}
+
+.achievement-thumb img {
+  display: block;
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+
+.achievement-body {
+  padding: 16px 18px 18px;
+}
+
+.achievement-title {
+  font-size: 1.1rem;
+  margin: 0 0 4px;
+}
+
+.achievement-meta {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.7;
+  margin-bottom: 8px;
+}
+
+.achievement-summary {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  opacity: 0.9;
+  margin-bottom: 12px;
+}
+
+.achievement-more-btn {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(90deg, #ff9100, #ff5b2b);
+  color: #05060a;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  float: right;
+}
+
+.achievement-more-btn:hover {
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Make card clickable but keep button styling */
+.achievement-card button {
+  pointer-events: none;
+}
+.achievement-card {
+  position: relative;
+}
+.achievement-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+/* --- Modal --- */
+
+.achievement-modal[aria-hidden="true"] {
+  display: none;
+}
+
+.achievement-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.achievement-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.achievement-modal__dialog {
+  position: relative;
+  /* Instead of just max-width, make the dialog responsive to viewport */
+  width: min(100% - 40px, 1200px); /* never wider than viewport - margins */
+  max-width: 1200px;
+  margin: 40px auto;
+  background: #05060a;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85);
+  padding: 20px 22px 22px;
+  box-sizing: border-box;
+  color:white;
+  font-family: "Poppins", sans-serif;
+
+  /* Optional but nice: keep whole modal on screen vertically */
+  max-height: calc(100vh - 80px);
+  overflow: auto;
+}
+
+.achievement-modal__close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 1.8rem;
+  line-height: 1;
+  border: none;
+  background: none;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.achievement-modal__header h2 {
+  margin: 0 0 4px;
+  font-size: 1.4rem;
+}
+
+.achievement-modal__meta {
+  margin: 0;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.75;
+}
+
+.achievement-modal__layout {
+  margin-top: 16px;
+  display: grid;
+  /* Give the image column more room, but still let it shrink */
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  gap: 18px 24px;
+}
+
+.achievement-modal__image-region {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Limit the image by HEIGHT, not just width */
+.achievement-modal__image-wrapper {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #10121a;
+
+  /* New: constrain image area so it never blows up the modal */
+  max-height: min(70vh, 720px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Let the image scale inside that box */
+.achievement-modal__image-wrapper img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;  /* preserves aspect ratio for both square + landscape */
+}
+
+.achievement-modal__image-caption {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-top: 8px;
+}
+
+.achievement-modal__image-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.image-nav-btn {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+  padding: 5px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color:#19c9ff;
+}
+
+.image-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.image-counter {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.achievement-modal__text-region h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.9;
+}
+
+.achievement-modal__text-region p {
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.achievement-modal__text-region ul {
+  margin: 0 0 14px 1.1em;
+  padding: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.achievement-modal__text-region li {
+  margin-bottom: 4px;
+}
+
+/* --- Responsive --- */
+
+@media (max-width: 900px) {
+  .achievement-modal__dialog {
+    margin: 16px;
+    width: calc(100% - 32px);
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+  }
+
+  .achievement-modal__layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+
+
+</style>
+</head>
+
+<script type="text/javascript" src="http://colepeterson.net/Javascript/jquery-3.4.0.js"></script>
+
+
+
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">Cole Peterson</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html">About</a></li>
+      <li><a href="index.html">Projects</a></li>
+      <li><a href="index.html">Contact</a></li>
+    </ul>
+  </nav>
+
+
+<!-- Industry Work Section -->
+<section id="industry-work" class="page page--industry">
+  <div class="industry-header">
+    <h1>Industry Work</h1>
+    <p>
+      A selection of technical achievements completed in a professional setting
+    </p>
+  </div>
+
+  <div class="achievement-grid">
+    <!-- Example card 1 -->
+    <article class="achievement-card" data-achievement-id="asmr-planet">
+      <div class="achievement-thumb">
+        <img src="Images/work_planet_01.jpg" alt="Hex-tile planet tool">
+      </div>
+      <div class="achievement-body">
+        <h2 class="achievement-title">Bubble World Shaders</h2>
+        <p class="achievement-meta">Technical Artist / Materials</p>
+        <p class="achievement-summary">
+          Created and maintained the main materials that make up the 
+          unique concept of "bubble worlds." 
+        </p>
+        <button class="achievement-more-btn" type="button">
+          View Details
+        </button>
+      </div>
+    </article>
+
+    <!-- Example card 2 -->
+    <article class="achievement-card" data-achievement-id="water-shaders">
+      <div class="achievement-thumb">
+        <img src="images/work_grass_02.jpg" alt="Water and shore foam shaders">
+      </div>
+      <div class="achievement-body">
+        <h2 class="achievement-title">Shoreline Foam & Water Shading</h2>
+        <p class="achievement-meta">Rendering & Materials</p>
+        <p class="achievement-summary">
+          Implemented distance-field-driven shoreline foam and single-layer
+          water materials for console targets.
+        </p>
+        <button class="achievement-more-btn" type="button">
+          View Details
+        </button>
+      </div>
+    </article>
+
+    
+  </div>
+</section>
+
+<!-- Modal (shared for all achievements) -->
+<div class="achievement-modal" id="achievement-modal" aria-hidden="true">
+  <div class="achievement-modal__backdrop" data-modal-close></div>
+
+  <div class="achievement-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="achievement-modal-title">
+    <button class="achievement-modal__close" type="button" data-modal-close>&times;</button>
+
+    <div class="achievement-modal__content">
+      <header class="achievement-modal__header">
+        <h2 id="achievement-modal-title"></h2>
+        <p class="achievement-modal__meta"></p>
+      </header>
+
+      <div class="achievement-modal__layout">
+        <div class="achievement-modal__image-region">
+          <div class="achievement-modal__image-wrapper">
+            <img id="achievement-modal-image" src="" alt="">
+          </div>
+          <p class="achievement-modal__image-caption" id="achievement-modal-caption"></p>
+
+          <div class="achievement-modal__image-controls">
+            <button type="button" id="achievement-modal-prev" class="image-nav-btn">&larr; Prev</button>
+            <span id="achievement-modal-counter" class="image-counter"></span>
+            <button type="button" id="achievement-modal-next" class="image-nav-btn">Next &rarr;</button>
+          </div>
+        </div>
+
+        <div class="achievement-modal__text-region">
+          <h3>Overview</h3>
+          <p id="achievement-modal-overview"></p>
+
+          <h3>Technical Breakdown</h3>
+          <ul id="achievement-modal-tech-list"></ul>
+
+          <h3>Tools & Tech</h3>
+          <p id="achievement-modal-tools"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<script>
+  
+  const ACHIEVEMENTS = {
+    "asmr-planet": {
+      title: "Bubble World Shaders",
+      role: "Technical Artist / Materials",
+      meta: "Unreal Engine 5 · Material Editor · Shaders",
+      overview:
+        "Created the materials and enviromental effects that would bring the original artistic concepts of 'bubble planets' to life. The bubble is filled with water and waves should crash against the sides.",
+      techHighlights: [
+        "To achieve the wave effect, the material is split into 2 material functions, bubble and water. ",
+        "A third function creates a mask that also controls the wave height using basic shader animation. the bubble and water material are blended with this mask.",
+        "Uses radial fog volume instead of exponential height fog to simulate oxygen rich atmosphere.",
+        "Utilizes 'Ultra Dynamic Sky' volumetric clouds with a custom mask around planet locations."
+      ],
+      tools:
+        "Unreal Engine 5, C++, Blueprints, PCG, Geometry Script, Niagara, Material Editor, Perforce, Photoshop/Blender for asset prep.",
+      images: [
+        {
+          src: "Images/work_planet_01.jpg",
+          alt: "Editor view of the bubble and water",
+          caption: "Editor view of the bubble and water"
+        },
+        {
+          src: "Images/work_planet_02.jpg",
+          alt: "A planet from above showing the custom volumetric cloud mask",
+          caption: "A planet from above showing the custom volumetrc cloud mask"
+        },
+        {
+          src: "Images/work_planet_03.jpg",
+          alt: "Another shot of the clouds.",
+          caption: "Another shot of the clouds."
+        }
+      ]
+    },
+
+    "water-shaders": {
+      title: "Shoreline Foam & Water Shading",
+      role: "Rendering / Materials",
+      meta: "Water · Distance Fields · Performance",
+      overview:
+        "Implemented water rendering focused on believable shoreline foam using distance fields, tuned for real-time performance on target hardware.",
+      techHighlights: [
+        "Used DistanceToNearestSurface with global distance fields to drive shoreline foam masks.",
+        "Integrated with single-layer water shading, including depth-based color absorption and refraction.",
+        "Exposed artist-friendly controls for foam falloff, noise detail, and view-distance behavior.",
+        "Profiled and adjusted distance-field view distance and clipmap settings to balance quality vs. cost."
+      ],
+      tools:
+        "Unreal Engine 5, Material Editor, Single Layer Water, Distance Fields, RenderDoc for validation, in-engine profiling tools.",
+      images: [
+        {
+          src: "Images/work_grass_02.jpg",
+          alt: "Shoreline foam close-up",
+          caption: "Close-up of foam driven by distance fields blending into deep water shading."
+        },
+        {
+          src: "Images/work_grass_01.jpg",
+          alt: "Wide shot of coastline water",
+          caption: "Wide shot showing stable foam patterns at distance with tuned distance-field settings."
+        }
+      ]
+    }
+
+    // Add more achievements here...
+  };
+
+  (function () {
+    const modal = document.getElementById("achievement-modal");
+    const modalTitle = document.getElementById("achievement-modal-title");
+    const modalMeta = document.querySelector(".achievement-modal__meta");
+    const modalImage = document.getElementById("achievement-modal-image");
+    const modalCaption = document.getElementById("achievement-modal-caption");
+    const modalOverview = document.getElementById("achievement-modal-overview");
+    const modalTechList = document.getElementById("achievement-modal-tech-list");
+    const modalTools = document.getElementById("achievement-modal-tools");
+    const modalPrev = document.getElementById("achievement-modal-prev");
+    const modalNext = document.getElementById("achievement-modal-next");
+    const modalCounter = document.getElementById("achievement-modal-counter");
+
+    let currentAchievement = null;
+    let currentImageIndex = 0;
+
+    function openModal(id) {
+      const data = ACHIEVEMENTS[id];
+      if (!data) return;
+
+      currentAchievement = data;
+      currentImageIndex = 0;
+
+      // Title/meta
+      modalTitle.textContent = data.title;
+      modalMeta.textContent = data.meta || data.role || "";
+
+      // Overview & tools
+      modalOverview.textContent = data.overview || "";
+      modalTools.textContent = data.tools || "";
+
+      // Tech list
+      modalTechList.innerHTML = "";
+      if (Array.isArray(data.techHighlights)) {
+        data.techHighlights.forEach((item) => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          modalTechList.appendChild(li);
+        });
+      }
+
+      // Images
+      updateModalImage();
+
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+
+    function updateModalImage() {
+      if (!currentAchievement || !currentAchievement.images) return;
+
+      const imgs = currentAchievement.images;
+      const clampedIndex = Math.max(0, Math.min(currentImageIndex, imgs.length - 1));
+      currentImageIndex = clampedIndex;
+
+      const imgData = imgs[clampedIndex];
+      modalImage.src = imgData.src;
+      modalImage.alt = imgData.alt || "";
+      modalCaption.textContent = imgData.caption || "";
+
+      if (imgs.length > 1) {
+        modalCounter.textContent = `${clampedIndex + 1} / ${imgs.length}`;
+        modalPrev.disabled = false;
+        modalNext.disabled = false;
+      } else {
+        modalCounter.textContent = "";
+        modalPrev.disabled = true;
+        modalNext.disabled = true;
+      }
+    }
+
+    function closeModal() {
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      currentAchievement = null;
+      currentImageIndex = 0;
+    }
+
+    // Wire up cards
+    document.querySelectorAll(".achievement-card").forEach((card) => {
+      const id = card.getAttribute("data-achievement-id");
+      card.addEventListener("click", (e) => {
+        e.preventDefault();
+        openModal(id);
+      });
+    });
+
+    // Modal controls
+    modal.querySelectorAll("[data-modal-close]").forEach((el) => {
+      el.addEventListener("click", closeModal);
+    });
+
+    modalPrev.addEventListener("click", () => {
+      if (!currentAchievement) return;
+      currentImageIndex =
+        (currentImageIndex - 1 + currentAchievement.images.length) %
+        currentAchievement.images.length;
+      updateModalImage();
+    });
+
+    modalNext.addEventListener("click", () => {
+      if (!currentAchievement) return;
+      currentImageIndex =
+        (currentImageIndex + 1) % currentAchievement.images.length;
+      updateModalImage();
+    });
+
+    modalImage.addEventListener("click", () => {
+    if (!currentAchievement) return;
+    const imgData = currentAchievement.images[currentImageIndex];
+    if (!imgData) return;
+
+    // Open the full-size image in a new tab
+    window.open(imgData.src, "_blank");
+    });
+
+    // Close on ESC
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.getAttribute("aria-hidden") === "false") {
+        closeModal();
+      }
+    });
+  })();
+</script>
+
+
+
+</body>
+
+
+</html>

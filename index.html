@@ -348,9 +348,35 @@ span{
     color: rgba(255, 255, 255, 0.75);
     text-decoration: none;
 }
+
+.card-TagContainer{
+    display: flex;
+    width:100%;
+    justify-content: center;
+}
+
+.card-tag{
+    display: flex;
+    width:fit-content;
+    border-radius: 12px;
+    padding: 0.35rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    margin: 0.1rem;
+    justify-content: center;
+    background-color: #43434d;
+    color: rgb(209, 209, 209);
+    text-decoration: none;
+    text-align: center;
+    font-weight: 500;
+    
+}
 .card:hover {
     border-color: rgba(0, 255, 255, 0.4);
     cursor: pointer;
+}
+.card-tag a{
+    text-decoration: none;
 }
 
 .card-body:active{
@@ -540,7 +566,7 @@ span{
     <div class = "Title-Container Title-Container--Desc">A collection of various tech art and computer science projects</div>
 
     <div class = "Cards-Container">
-        <a href = "ShaderGallery.html">
+        <a href = "ShaderGallery.html" style = "text-decoration: none;">
             <div class="card">
                 <div class="card-image">
                     <img src="Images/Card_Shaders.jpg" alt="Shader Viewer">
@@ -551,11 +577,40 @@ span{
                     <p class="card-text">
                     Custom built Web-GL shader viewer to show off my fragment shader art
                     </p>
+                    <div class = "card-TagContainer">
+                        <div class = "card-tag">Personal</div>
+                        <div class = "card-tag">WebGL</div>
+                        <div class = "card-tag">Shaders</div>
+                    </div>
+                </div>
+                
+            </div>
+        </a>
+
+        <a href = "IndustryWork.html" style = "text-decoration: none;">
+            <div class="card">
+                <div class="card-image">
+                    <img src="Images/Card_Website.jpg" alt="Professional Work">
+                </div>
+
+                <div class="card-body">
+                    <h3 class="card-title">Professional Work</h3>
+                    <p class="card-text">
+                    Some of my work in the industry 
+                    </p>
+                    <div class = "card-TagContainer">
+                            <div class = "card-tag" style = "background-color: #16ff9e; color: #111;">Industry</div>
+                            <div class = "card-tag">Unreal 5</div>
+                            <div class = "card-tag">Blender</div>
+                            <div class = "card-tag">Tech-Art</div>
+                            <div class = "card-tag">C++</div>
+                    </div>
                 </div>
             </div>
         </a>
 
-        <a href = "Soundlab/Soundlab.html">
+
+        <a href = "Soundlab/Soundlab.html" style = "text-decoration: none;">
             <div class="card">
                 <div class="card-image">
                     <img src="Images/Card_Audio.jpg" alt="Audio Synthesis">
@@ -566,11 +621,16 @@ span{
                     <p class="card-text">
                     Create sounds using oscillators and math in this interactive tool!
                     </p>
+                    <div class = "card-TagContainer">
+                        <div class = "card-tag">Personal</div>
+                        <div class = "card-tag">Audio</div>
+                        <div class = "card-tag">Procedural</div>
+                    </div>
                 </div>
             </div>
         </a>
 
-        <a href = "https://github.com/ColePeterson/ColeEngine" target="_blank" rel="noopener">
+        <a href = "https://github.com/ColePeterson/ColeEngine" target="_blank" rel="noopener" style = "text-decoration: none;">
             <div class="card">
                 <div class="card-image">
                     <img src="Images/Card_Engine.jpg" alt="Custom Engine">
@@ -581,6 +641,12 @@ span{
                     <p class="card-text">
                     A custom rendering engine featuring ECS and programmable particle systems 
                     </p>
+                    <div class = "card-TagContainer">
+                        <div class = "card-tag">Personal</div>
+                        <div class = "card-tag">C++</div>
+                        <div class = "card-tag">OpenGL</div>
+                        <div class = "card-tag">Engine</div>
+                    </div>
                 </div>
                 
             </div>
@@ -588,7 +654,7 @@ span{
 
         <div class="card">
             <div class="card-image">
-                <img src="Images/Card_Nightwalker.jpg" alt="Raycasting engine">
+                <img src="Images/Card_Nightwalker.jpg" alt="Raycasting engine" >
             </div>
 
             <div class="card-body">
@@ -596,6 +662,12 @@ span{
                 <p class="card-text">
                 My 1st year video game project. A 2.5D raycast engine featuring 2D sprites, diffuse lighting and working doors 
                 </p>
+                <div class = "card-TagContainer">
+                        <div class = "card-tag">School</div>
+                        <div class = "card-tag">C</div>
+                        <div class = "card-tag">Raycasting</div>
+                        <div class = "card-tag">Game</div>
+                </div>
             </div>
         </div>
 
@@ -609,8 +681,16 @@ span{
                 <p class="card-text">
                 A custom engine that combines the power of shaders and MIDI perfect for live music 
                 </p>
+                <div class = "card-TagContainer">
+                        <div class = "card-tag">Personal</div>
+                        <div class = "card-tag">C++</div>
+                        <div class = "card-tag">OpenGL</div>
+                        <div class = "card-tag">MIDI</div>
+                        <div class = "card-tag">Music</div>
+                </div>
             </div>
         </div>
+
 
         <div class="card">
             <div class="card-image">
@@ -622,10 +702,15 @@ span{
                 <p class="card-text">
                 My portfolio website made from scratch with pure HTML/CSS and some JS 
                 </p>
+                <div class = "card-TagContainer">
+                        <div class = "card-tag">Personal</div>
+                        <div class = "card-tag">CSS</div>
+                        <div class = "card-tag">Javascript</div>
+                </div>
             </div>
         </div>
-
         
+       
 
 
     </div>
