@@ -65,7 +65,7 @@ void main(){
     vec2 nv = uv;
     
     // Time scrubbing
-    float t = time + mouse.x*.02 + 3.;
+    float t = time + 3.;
     
     // Slight curvyness
     float k = exp((sin(uv.y*4. - 1.55)))+0.8;
