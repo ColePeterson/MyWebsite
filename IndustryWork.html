@@ -289,9 +289,9 @@ html, body {
 .achievement-modal__dialog {
   position: relative;
   /* Instead of just max-width, make the dialog responsive to viewport */
-  width: min(100% - 40px, 1200px); /* never wider than viewport - margins */
-  max-width: 1200px;
-  margin: 40px auto;
+  width: min(100% - 20px, 1500px); /* never wider than viewport - margins */
+  max-width: 1500px;
+  margin: 12px auto;
   background: #05060a;
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -302,7 +302,7 @@ html, body {
   font-family: "Poppins", sans-serif;
 
   /* Optional but nice: keep whole modal on screen vertically */
-  max-height: calc(100vh - 80px);
+  max-height: calc(100vh - 24px);
   overflow: auto;
 }
 
@@ -335,7 +335,7 @@ html, body {
   margin-top: 16px;
   display: grid;
   /* Give the image column more room, but still let it shrink */
-  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 2.2fr) minmax(0, 0.8fr);
   gap: 18px 24px;
 }
 
@@ -351,8 +351,8 @@ html, body {
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: #10121a;
 
-  /* New: constrain image area so it never blows up the modal */
-  max-height: min(70vh, 720px);
+  /* Keep a stable image stage so controls don't shift per image aspect ratio */
+  height: clamp(340px, 72vh, 980px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -412,6 +412,7 @@ html, body {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   opacity: 0.9;
+  color: rgb(0, 217, 255);
 }
 
 .achievement-modal__text-region p {
@@ -443,6 +444,10 @@ html, body {
 
   .achievement-modal__layout {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .achievement-modal__image-wrapper {
+    height: clamp(220px, 42vh, 480px);
   }
 }
 
@@ -509,6 +514,22 @@ html, body {
         <p class="achievement-meta">Rendering & Materials</p>
         <p class="achievement-summary">
           Implemented interactable grass using PCG to spawn.
+        </p>
+        <button class="achievement-more-btn" type="button">
+          View Details
+        </button>
+      </div>
+    </article>
+
+    <article class="achievement-card" data-achievement-id="trees">
+      <div class="achievement-thumb">
+        <img src="Images/Work_Fir_09.jpg" alt="Nanite assemblies">
+      </div>
+      <div class="achievement-body">
+        <h2 class="achievement-title">Custom Nanite Foliage Assemblies</h2>
+        <p class="achievement-meta">Technical Art & Custom Tools</p>
+        <p class="achievement-summary">
+          Created custom workflow to create Nanite assemblies for the new Nanite foliage system.
         </p>
         <button class="achievement-more-btn" type="button">
           View Details
@@ -679,12 +700,12 @@ html, body {
           caption: "In engine grass."
         },
         {
-          src: "Images/work_grass_01.jpg",
+          src: "Images/work_grass_05.jpg",
           alt: "In engine grass.",
           caption: "In engine grass."
         },
         {
-          src: "Images/work_grass_03.jpg",
+          src: "Images/work_grass_06.jpg",
           alt: "In engine grass.",
           caption: "In engine grass."
         },
@@ -692,6 +713,58 @@ html, body {
           src: "Images/work_grass_04.jpg",
           alt: "In engine grass.",
           caption: "In engine grass."
+        }
+
+      ]
+    },
+
+    // Nanite assemblies
+    "trees": {
+      title: "Custom Nanite Foliage Assemblies",
+      role: "Technical Art / Custom Tools",
+      meta: "Nanite Foliage · Blender · SpeedTree · Python",
+      overview:
+        "Created a workflow to create custom Nanite foliage using the new concept of Nanite assemblies.",
+      techHighlights: [
+        "Assembly parts are created in Blender. The are a total of 4 parts that make up the fir trees.",
+        "Parts are imported into SpeedTree where they are instanced and used to model the shape and properties of the tree.",
+        "An XML is exported from SpeedTree providing the transforms for each instanced part. An FBX is also exported including only the skeletal components of the tree.",
+        "A python script converts the transform data in the XML to a readable JSON file that Unreal can parse.",
+        "Finally, an editor utility script in Unreal uses the instance transform data JSON to construct the full assembly on the base skeletal mesh.",
+        "The result is a custom Nanite tree not dependent on any FAB assets and is fully functional with the new wind system."
+      ],
+      tools:
+        "Unreal Engine 5, Material Editor, Runtime Virtual Texture.",
+      images: [
+        {
+          src: "Images/Work_Fir_05.jpg",
+          alt: "Final fir tree result.",
+          caption: "Final fir tree result."
+        },
+        {
+          src: "Images/Work_Fir_03.jpg",
+          alt: "Final fir tree result.",
+          caption: "Final fir tree result."
+        },
+        {
+          src: "Images/Work_Fir_09.jpg",
+          alt: "Final fir tree result.",
+          caption: "Final fir tree result."
+        },
+        {
+          src: "Images/Work_Fir_02.jpg",
+          alt: "Modeling in SpeedTree using assembly parts.",
+          caption: "Modeling in SpeedTree using assembly parts."
+        },
+        {
+          src: "Images/Work_Fir_06.jpg",
+          alt: "Assembly parts in Blender.",
+          caption: "Assembly parts in Blender."
+        },
+        {
+          src: "Images/Work_Fir_07.jpg",
+          alt: "Unreal script to create Nanite assembly from JSON.",
+          caption: "Unreal script to create Nanite assembly from JSON."
         }
 
       ]
